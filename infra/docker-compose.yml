@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  cliente-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: cliente
+      POSTGRES_PASSWORD: cliente
+      POSTGRES_DB: cliente_db
+    ports:
+      - "5433:5432"
+
+  produto-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: produto
+      POSTGRES_PASSWORD: produto
+      POSTGRES_DB: produto_db
+    ports:
+      - "5434:5432"
+
+  estoque-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: estoque
+      POSTGRES_PASSWORD: estoque
+      POSTGRES_DB: estoque_db
+    ports:
+      - "5435:5432"
+
+  pedido-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: pedido
+      POSTGRES_PASSWORD: pedido
+      POSTGRES_DB: pedido_db
+    ports:
+      - "5436:5432"
+
+  pagamento-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: pagamento
+      POSTGRES_PASSWORD: pagamento
+      POSTGRES_DB: pagamento_db
+    ports:
+      - "5437:5432"
+
+  cliente-service:
+    build: ../../Downloads/javorders-completo-base-compose/cliente-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - cliente-db
+
+  produto-service:
+    build: ../../Downloads/javorders-completo-base-compose/produto-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - produto-db
+
+  estoque-service:
+    build: ../../Downloads/javorders-completo-base-compose/estoque-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      - estoque-db
+
+  pedido-service:
+    build: ../../Downloads/javorders-completo-base-compose/pedido-service
+    ports:
+      - "8084:8080"
+    depends_on:
+      - pedido-db
+
+  pagamento-service:
+    build: ../../Downloads/javorders-completo-base-compose/pagamento-service
+    ports:
+      - "8085:8080"
+    depends_on:
+      - pagamento-db
+
+  pedido-receiver:
+    build: ../../Downloads/javorders-completo-base-compose/pedido-receiver
+    ports:
+      - "8090:8080"
+    depends_on:
+      - rabbitmq
