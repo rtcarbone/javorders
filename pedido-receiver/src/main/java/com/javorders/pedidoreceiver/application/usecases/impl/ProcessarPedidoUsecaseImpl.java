@@ -1,8 +1,13 @@
 package com.javorders.pedidoreceiver.application.usecases.impl;
 
 import com.javorders.pedidoreceiver.application.usecases.ProcessarPedidoUsecase;
-import com.javorders.pedidoreceiver.domain.model.Pedido;
 import com.javorders.pedidoreceiver.domain.gateways.*;
+import com.javorders.pedidoreceiver.domain.model.ItemPedido;
+import com.javorders.pedidoreceiver.domain.model.Pedido;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
@@ -13,10 +18,10 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
     private final PedidoGateway pedidoGateway;
 
     public ProcessarPedidoUsecaseImpl(ProdutoGateway produtoGateway,
-                                       ClienteGateway clienteGateway,
-                                       EstoqueGateway estoqueGateway,
-                                       PagamentoGateway pagamentoGateway,
-                                       PedidoGateway pedidoGateway) {
+                                      ClienteGateway clienteGateway,
+                                      EstoqueGateway estoqueGateway,
+                                      PagamentoGateway pagamentoGateway,
+                                      PedidoGateway pedidoGateway) {
         this.produtoGateway = produtoGateway;
         this.clienteGateway = clienteGateway;
         this.estoqueGateway = estoqueGateway;
@@ -30,17 +35,23 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
         var cliente = clienteGateway.getById(pedido.getClienteId());
 
         estoqueGateway.baixaEstoque(pedido);
-        var uuidPagamento = pagamentoGateway.criarOrdemPagamento(pedido);
-        pedido.setValorTotal(produtos.stream()
-            .map(p -> p.getPreco().multiply(
-                pedido.getItens().stream()
-                    .filter(i -> i.getSku().equals(p.getSku()))
-                    .findFirst().get()
-                    .getQuantidade().toBigDecimal()
-            ))
-            .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)
-        );
+        var pagamento = pagamentoGateway.criarOrdemPagamento(pedido);
 
+        // Mapeia as quantidades por SKU
+        Map<String, Integer> quantidadePorSku = pedido.getItens()
+                .stream()
+                .collect(Collectors.toMap(ItemPedido::getSku, ItemPedido::getQuantidade));
+
+        // Calcula o valor total
+        BigDecimal total = produtos.stream()
+                .map(produto -> {
+                    Integer quantidade = quantidadePorSku.getOrDefault(produto.getSku(), 0);
+                    return produto.getPreco()
+                            .multiply(new BigDecimal(quantidade));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        pedido.setValorTotal(total);
         pedidoGateway.salvar(pedido);
     }
 }
