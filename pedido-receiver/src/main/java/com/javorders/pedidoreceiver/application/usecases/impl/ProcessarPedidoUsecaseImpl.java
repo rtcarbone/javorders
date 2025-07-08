@@ -4,11 +4,13 @@ import com.javorders.pedidoreceiver.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoreceiver.domain.gateways.*;
 import com.javorders.pedidoreceiver.domain.model.ItemPedido;
 import com.javorders.pedidoreceiver.domain.model.Pedido;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Service
 public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
     private final ProdutoGateway produtoGateway;

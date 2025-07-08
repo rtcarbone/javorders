@@ -18,4 +18,5 @@ public class NovoPedidoEntryPoint {
     public void listen(Pedido pedido) {
         processarPedidoUsecase.processar(pedido);
     }
+
 }
