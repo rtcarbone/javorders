@@ -1,7 +1,10 @@
 package com.javorders.clienteservice.infrastructure.persistence;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "enderecos")
@@ -22,4 +25,5 @@ public class EnderecoEntity {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private ClienteEntity cliente;
+
 }

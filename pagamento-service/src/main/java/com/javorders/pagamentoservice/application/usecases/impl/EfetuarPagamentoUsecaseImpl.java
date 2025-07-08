@@ -5,7 +5,9 @@ import com.javorders.pagamentoservice.domain.gateways.PagamentoGateway;
 import com.javorders.pagamentoservice.domain.gateways.SistemaPagamentoExternoGateway;
 import com.javorders.pagamentoservice.domain.model.Pagamento;
 import com.javorders.pagamentoservice.domain.model.StatusPagamento;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EfetuarPagamentoUsecaseImpl implements EfetuarPagamentoUsecase {
 
     private final SistemaPagamentoExternoGateway externoGateway;

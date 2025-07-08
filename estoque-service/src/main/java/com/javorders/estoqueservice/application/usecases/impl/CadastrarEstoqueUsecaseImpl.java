@@ -3,7 +3,9 @@ package com.javorders.estoqueservice.application.usecases.impl;
 import com.javorders.estoqueservice.application.usecases.CadastrarEstoqueUsecase;
 import com.javorders.estoqueservice.domain.gateways.EstoqueGateway;
 import com.javorders.estoqueservice.domain.model.Estoque;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CadastrarEstoqueUsecaseImpl implements CadastrarEstoqueUsecase {
 
     private final EstoqueGateway gateway;
@@ -15,4 +17,5 @@ public class CadastrarEstoqueUsecaseImpl implements CadastrarEstoqueUsecase {
     public Estoque executar(Estoque estoque) {
         return gateway.salvar(estoque);
     }
+
 }
