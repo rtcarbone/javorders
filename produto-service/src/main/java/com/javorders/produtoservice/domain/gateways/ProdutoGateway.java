@@ -7,6 +7,10 @@ import java.util.Optional;
 
 public interface ProdutoGateway {
     Produto salvar(Produto produto);
+
     Optional<Produto> buscarPorSku(String sku);
+
     List<Produto> listarTodos();
+
+    void deletar(Long id);
 }

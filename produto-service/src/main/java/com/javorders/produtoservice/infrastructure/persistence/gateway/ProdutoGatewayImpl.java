@@ -1,37 +1,45 @@
-package com.javorders.produtoservice.infrastructure.persistence;
+package com.javorders.produtoservice.infrastructure.persistence.gateway;
 
 import com.javorders.produtoservice.domain.gateways.ProdutoGateway;
 import com.javorders.produtoservice.domain.model.Produto;
 import com.javorders.produtoservice.infrastructure.persistence.mapper.ProdutoMapper;
 import com.javorders.produtoservice.infrastructure.persistence.repository.ProdutoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ProdutoGatewayImpl implements ProdutoGateway {
 
-    private final ProdutoRepository produtoRepository;
-
-    public ProdutoGatewayImpl(ProdutoRepository produtoRepository) {
-        this.produtoRepository = produtoRepository;
-    }
+    private final ProdutoRepository repository;
 
     @Override
     public Produto salvar(Produto produto) {
         var entity = ProdutoMapper.toEntity(produto);
-        return ProdutoMapper.toDomain(produtoRepository.save(entity));
+        var salvo = repository.save(entity);
+        return ProdutoMapper.toDomain(salvo);
     }
 
     @Override
     public Optional<Produto> buscarPorSku(String sku) {
-        return produtoRepository.findBySku(sku).map(ProdutoMapper::toDomain);
+        return repository.findBySku(sku)
+                .map(ProdutoMapper::toDomain);
     }
 
     @Override
     public List<Produto> listarTodos() {
-        return produtoRepository.findAll().stream().map(ProdutoMapper::toDomain).collect(Collectors.toList());
+        return repository.findAll()
+                .stream()
+                .map(ProdutoMapper::toDomain)
+                .toList();
     }
+
+    @Override
+    public void deletar(Long id) {
+        repository.deleteById(id);
+    }
+
 }

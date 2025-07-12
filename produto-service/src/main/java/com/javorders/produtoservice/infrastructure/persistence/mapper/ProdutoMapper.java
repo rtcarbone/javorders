@@ -1,7 +1,7 @@
 package com.javorders.produtoservice.infrastructure.persistence.mapper;
 
 import com.javorders.produtoservice.domain.model.Produto;
-import com.javorders.produtoservice.infrastructure.persistence.ProdutoEntity;
+import com.javorders.produtoservice.infrastructure.persistence.entity.ProdutoEntity;
 
 public class ProdutoMapper {
 

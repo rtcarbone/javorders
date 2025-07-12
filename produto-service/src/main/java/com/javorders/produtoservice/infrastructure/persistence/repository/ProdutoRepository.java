@@ -1,6 +1,6 @@
 package com.javorders.produtoservice.infrastructure.persistence.repository;
 
-import com.javorders.produtoservice.infrastructure.persistence.ProdutoEntity;
+import com.javorders.produtoservice.infrastructure.persistence.entity.ProdutoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
