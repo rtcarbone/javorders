@@ -1,4 +1,4 @@
-package com.javorders.clienteservice.infrastructure.persistence;
+package com.javorders.clienteservice.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -2,8 +2,8 @@ package com.javorders.clienteservice.infrastructure.persistence.mapper;
 
 import com.javorders.clienteservice.domain.model.Cliente;
 import com.javorders.clienteservice.domain.model.Endereco;
-import com.javorders.clienteservice.infrastructure.persistence.ClienteEntity;
-import com.javorders.clienteservice.infrastructure.persistence.EnderecoEntity;
+import com.javorders.clienteservice.infrastructure.persistence.entity.ClienteEntity;
+import com.javorders.clienteservice.infrastructure.persistence.entity.EnderecoEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

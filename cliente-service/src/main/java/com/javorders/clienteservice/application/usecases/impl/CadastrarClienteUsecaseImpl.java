@@ -8,14 +8,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastrarClienteUsecaseImpl implements CadastrarClienteUsecase {
 
-    private final ClienteGateway clienteGateway;
+    private final ClienteGateway gateway;
 
-    public CadastrarClienteUsecaseImpl(ClienteGateway clienteGateway) {
-        this.clienteGateway = clienteGateway;
+    public CadastrarClienteUsecaseImpl(ClienteGateway gateway) {
+        this.gateway = gateway;
     }
 
     @Override
     public Cliente executar(Cliente cliente) {
-        return clienteGateway.salvar(cliente);
+        boolean cpfJaExiste = gateway.buscarPorCpf(cliente.getCpf())
+                .isPresent();
+        if (cpfJaExiste) {
+            throw new IllegalArgumentException("CPF já cadastrado.");
+        }
+        return gateway.salvar(cliente);
     }
 }

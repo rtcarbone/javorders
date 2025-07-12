@@ -2,6 +2,8 @@ package com.javorders.clienteservice.application.usecases;
 
 import com.javorders.clienteservice.domain.model.Cliente;
 
-public interface CadastrarClienteUsecase {
-    Cliente executar(Cliente cliente);
+import java.util.List;
+
+public interface ConsultarClientesUsecase {
+    List<Cliente> executar();
 }
