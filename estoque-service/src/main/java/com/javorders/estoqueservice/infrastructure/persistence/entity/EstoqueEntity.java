@@ -1,20 +1,25 @@
-package com.javorders.estoqueservice.infrastructure.persistence;
+package com.javorders.estoqueservice.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "estoques", uniqueConstraints = {@UniqueConstraint(columnNames = "sku")})
-@Data
+@Table(name = "estoque")
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class EstoqueEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String sku;
+
+    @Column(nullable = false)
     private Integer quantidade;
+
 }

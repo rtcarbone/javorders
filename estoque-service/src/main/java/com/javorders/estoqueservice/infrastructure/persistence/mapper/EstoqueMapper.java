@@ -1,7 +1,7 @@
 package com.javorders.estoqueservice.infrastructure.persistence.mapper;
 
 import com.javorders.estoqueservice.domain.model.Estoque;
-import com.javorders.estoqueservice.infrastructure.persistence.EstoqueEntity;
+import com.javorders.estoqueservice.infrastructure.persistence.entity.EstoqueEntity;
 
 public class EstoqueMapper {
 
