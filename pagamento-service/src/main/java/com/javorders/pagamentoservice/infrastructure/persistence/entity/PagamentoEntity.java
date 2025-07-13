@@ -2,7 +2,10 @@ package com.javorders.pagamentoservice.infrastructure.persistence.entity;
 
 import com.javorders.pagamentoservice.domain.model.StatusPagamento;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -27,4 +30,5 @@ public class PagamentoEntity {
 
     @Enumerated(EnumType.STRING)
     private StatusPagamento status;
+
 }
