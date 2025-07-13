@@ -6,6 +6,7 @@ import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoRequestDT
 import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoResponseDTO;
 import com.javorders.pedidoservice.infrastructure.controller.mapper.PedidoDTOMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +17,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoController {
 
+    private final RabbitTemplate rabbitTemplate;
     private final RegistrarPedidoUsecase registrarPedidoUsecase;
     private final AlterarPedidoUsecase alterarPedidoUsecase;
     private final ConsultarPedidoUsecase consultarPedidoUsecase;
     private final ListarPedidosUsecase listarPedidosUsecase;
     private final DeletarPedidoUsecase deletarPedidoUsecase;
+
+    @PostMapping
+    public ResponseEntity<Void> publicarPedido(@RequestBody PedidoRequestDTO dto) {
+        Pedido pedido = PedidoDTOMapper.toDomain(dto);
+        rabbitTemplate.convertAndSend("novo-pedido-queue", pedido);
+        return ResponseEntity.accepted()
+                .build();
+    }
 
     @PostMapping
     public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
