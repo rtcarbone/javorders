@@ -26,7 +26,6 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
     public void executar(Pedido pedido) {
         pedido.setStatus(StatusPedido.ABERTO);
 
-        // Buscar produtos
         List<ProdutoDTO> produtos = produtoGateway.obterPorSkus(pedido.getItens());
 
         // Calcular valor total
@@ -44,13 +43,13 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
                 pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
             } catch (Exception e) {
-                // Falha no estoque → estorna pagamento
+                // Falha no estoque: estorna pagamento
                 pagamentoGateway.estornar(pedido);
                 pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
             }
 
         } catch (Exception e) {
-            // Falha no pagamento → repor estoque
+            // Falha no pagamento: repor estoque
             estoqueGateway.reporEstoque(pedido);
             pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
         }
