@@ -4,13 +4,15 @@ import com.javorders.pedidoreceiver.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoreceiver.domain.gateways.*;
 import com.javorders.pedidoreceiver.domain.model.ItemPedido;
 import com.javorders.pedidoreceiver.domain.model.Pedido;
+import com.javorders.pedidoreceiver.domain.model.StatusPedido;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
     private final ProdutoGateway produtoGateway;
@@ -19,41 +21,45 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
     private final PagamentoGateway pagamentoGateway;
     private final PedidoGateway pedidoGateway;
 
-    public ProcessarPedidoUsecaseImpl(ProdutoGateway produtoGateway,
-                                      ClienteGateway clienteGateway,
-                                      EstoqueGateway estoqueGateway,
-                                      PagamentoGateway pagamentoGateway,
-                                      PedidoGateway pedidoGateway) {
-        this.produtoGateway = produtoGateway;
-        this.clienteGateway = clienteGateway;
-        this.estoqueGateway = estoqueGateway;
-        this.pagamentoGateway = pagamentoGateway;
-        this.pedidoGateway = pedidoGateway;
-    }
-
     @Override
     public void processar(Pedido pedido) {
         var produtos = produtoGateway.obterBySkus(pedido.getItens());
         var cliente = clienteGateway.getById(pedido.getClienteId());
 
+        if (cliente == null || produtos.isEmpty()) {
+            pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
+            pedidoGateway.salvar(pedido);
+            return;
+        }
+
         estoqueGateway.baixaEstoque(pedido);
-        var pagamento = pagamentoGateway.criarOrdemPagamento(pedido);
+        var uuidPagamento = pagamentoGateway.criarOrdemPagamento(pedido);
 
-        // Mapeia as quantidades por SKU
-        Map<String, Integer> quantidadePorSku = pedido.getItens()
-                .stream()
-                .collect(Collectors.toMap(ItemPedido::getSku, ItemPedido::getQuantidade));
-
-        // Calcula o valor total
-        BigDecimal total = produtos.stream()
-                .map(produto -> {
-                    Integer quantidade = quantidadePorSku.getOrDefault(produto.getSku(), 0);
-                    return produto.getPreco()
-                            .multiply(new BigDecimal(quantidade));
-                })
+        BigDecimal valorTotal = produtos.stream()
+                .map(p -> p.getPreco()
+                        .multiply(
+                                BigDecimal.valueOf(pedido.getItens()
+                                                           .stream()
+                                                           .filter(i -> i.getSku()
+                                                                   .equals(p.getSku()))
+                                                           .findFirst()
+                                                           .map(ItemPedido::getQuantidade)
+                                                           .orElse(0))))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        pedido.setValorTotal(total);
+        pedido.setValorTotal(valorTotal);
+        pedido.setStatus(
+                pagamentoRecusado(uuidPagamento)
+                        ? StatusPedido.FECHADO_SEM_CREDITO
+                        : StatusPedido.FECHADO_COM_SUCESSO
+        );
+
         pedidoGateway.salvar(pedido);
     }
+
+    private boolean pagamentoRecusado(UUID uuidPagamento) {
+        return uuidPagamento.toString()
+                .endsWith("0");
+    }
+
 }

@@ -11,7 +11,8 @@ public class PedidoGatewayImpl implements PedidoGateway {
     private final WebClient webClient;
 
     public PedidoGatewayImpl(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://pedido-service:8084").build();
+        this.webClient = builder.baseUrl("http://pedido-service:8084")
+                .build();
     }
 
     @Override
@@ -20,7 +21,8 @@ public class PedidoGatewayImpl implements PedidoGateway {
                 .uri("/pedidos")
                 .bodyValue(pedido)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .toBodilessEntity()
                 .block();
     }
+
 }
