@@ -5,95 +5,118 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # Painel web
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
 
-  cliente-db:
+  postgres-cliente:
     image: postgres:15
     environment:
-      POSTGRES_USER: cliente
-      POSTGRES_PASSWORD: cliente
-      POSTGRES_DB: cliente_db
+      POSTGRES_DB: clientes
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
       - "5433:5432"
 
-  produto-db:
+  postgres-produto:
     image: postgres:15
     environment:
-      POSTGRES_USER: produto
-      POSTGRES_PASSWORD: produto
-      POSTGRES_DB: produto_db
+      POSTGRES_DB: produtos
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
       - "5434:5432"
 
-  estoque-db:
+  postgres-estoque:
     image: postgres:15
     environment:
-      POSTGRES_USER: estoque
-      POSTGRES_PASSWORD: estoque
-      POSTGRES_DB: estoque_db
+      POSTGRES_DB: estoques
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
       - "5435:5432"
 
-  pedido-db:
+  postgres-pagamento:
     image: postgres:15
     environment:
-      POSTGRES_USER: pedido
-      POSTGRES_PASSWORD: pedido
-      POSTGRES_DB: pedido_db
+      POSTGRES_DB: pagamentos
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
       - "5436:5432"
 
-  pagamento-db:
+  postgres-pedido:
     image: postgres:15
     environment:
-      POSTGRES_USER: pagamento
-      POSTGRES_PASSWORD: pagamento
-      POSTGRES_DB: pagamento_db
+      POSTGRES_DB: pedidos
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
       - "5437:5432"
 
   cliente-service:
-    build: ../../Downloads/javorders-completo-base-compose/cliente-service
+    build: ./cliente-service
     ports:
       - "8081:8080"
     depends_on:
-      - cliente-db
+      - postgres-cliente
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cliente:5432/clientes
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
   produto-service:
-    build: ../../Downloads/javorders-completo-base-compose/produto-service
+    build: ./produto-service
     ports:
       - "8082:8080"
     depends_on:
-      - produto-db
+      - postgres-produto
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-produto:5432/produtos
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
   estoque-service:
-    build: ../../Downloads/javorders-completo-base-compose/estoque-service
+    build: ./estoque-service
     ports:
       - "8083:8080"
     depends_on:
-      - estoque-db
+      - postgres-estoque
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-estoque:5432/estoques
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
-  pedido-service:
-    build: ../../Downloads/javorders-completo-base-compose/pedido-service
+  pagamento-service:
+    build: ./pagamento-service
     ports:
       - "8084:8080"
     depends_on:
-      - pedido-db
+      - postgres-pagamento
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-pagamento:5432/pagamentos
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
-  pagamento-service:
-    build: ../../Downloads/javorders-completo-base-compose/pagamento-service
+  pedido-service:
+    build: ./pedido-service
     ports:
       - "8085:8080"
     depends_on:
-      - pagamento-db
+      - postgres-pedido
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-pedido:5432/pedidos
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
 
   pedido-receiver:
-    build: ../../Downloads/javorders-completo-base-compose/pedido-receiver
-    ports:
-      - "8090:8080"
+    build: ./pedido-receiver
     depends_on:
       - rabbitmq
+      - cliente-service
+      - produto-service
+      - estoque-service
+      - pagamento-service
+      - pedido-service
