@@ -16,6 +16,7 @@ public class PedidoMapper {
                 .clienteId(pedido.getClienteId())
                 .valorTotal(pedido.getValorTotal())
                 .status(pedido.getStatus())
+                .uuidTransacao(pedido.getUuidTransacao())
                 .build();
 
         List<ItemPedidoEntity> itens = pedido.getItens().stream().map(i ->
@@ -36,6 +37,7 @@ public class PedidoMapper {
                 .clienteId(entity.getClienteId())
                 .valorTotal(entity.getValorTotal())
                 .status(entity.getStatus())
+                .uuidTransacao(entity.getUuidTransacao())
                 .itens(entity.getItens().stream().map(i ->
                     ItemPedido.builder()
                             .sku(i.getSku())

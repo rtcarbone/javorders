@@ -29,6 +29,9 @@ public class PedidoEntity {
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
+    @Column(name = "uuid_transacao")
+    private String uuidTransacao;
+
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoEntity> itens;
 

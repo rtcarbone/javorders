@@ -2,7 +2,8 @@ CREATE TABLE pedidos (
     id SERIAL PRIMARY KEY,
     cliente_id BIGINT,
     valor_total NUMERIC(10,2),
-    status VARCHAR(50)
+    status VARCHAR(50),
+    uuid_transacao VARCHAR(100)
 );
 
 CREATE TABLE itens_pedido (
