@@ -28,7 +28,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
                 return;
             }
 
-            var produtos = produtoGateway.buscarPorSkus(pedido.getSkus());
+            var produtos = produtoGateway.obterPorSkus(pedido.getItens());
 
             if (!pedido.temEstoqueDisponivel(produtos)) {
                 pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
