@@ -1,9 +1,6 @@
 package com.javorders.pedidoservice.infrastructure.controller;
 
-import com.javorders.pedidoservice.application.usecases.AlterarPedidoUsecase;
-import com.javorders.pedidoservice.application.usecases.ConsultarPedidoUsecase;
-import com.javorders.pedidoservice.application.usecases.DeletarPedidoUsecase;
-import com.javorders.pedidoservice.application.usecases.RegistrarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.*;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoRequestDTO;
 import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoResponseDTO;
@@ -11,6 +8,8 @@ import com.javorders.pedidoservice.infrastructure.controller.mapper.PedidoDTOMap
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -20,6 +19,7 @@ public class PedidoController {
     private final RegistrarPedidoUsecase registrarPedidoUsecase;
     private final AlterarPedidoUsecase alterarPedidoUsecase;
     private final ConsultarPedidoUsecase consultarPedidoUsecase;
+    private final ListarPedidosUsecase listarPedidosUsecase;
     private final DeletarPedidoUsecase deletarPedidoUsecase;
 
     @PostMapping
@@ -42,6 +42,15 @@ public class PedidoController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound()
                                 .build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PedidoResponseDTO>> listar() {
+        var pedidos = listarPedidosUsecase.executar()
+                .stream()
+                .map(PedidoDTOMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(pedidos);
     }
 
     @DeleteMapping("/{id}")

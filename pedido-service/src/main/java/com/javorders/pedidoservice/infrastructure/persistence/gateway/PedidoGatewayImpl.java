@@ -7,6 +7,7 @@ import com.javorders.pedidoservice.infrastructure.persistence.repository.PedidoR
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -26,6 +27,14 @@ public class PedidoGatewayImpl implements PedidoGateway {
     public Optional<Pedido> buscarPorId(Long id) {
         return repository.findById(id)
                 .map(PedidoMapper::toDomain);
+    }
+
+    @Override
+    public List<Pedido> buscarTodos() {
+        return repository.findAll()
+                .stream()
+                .map(PedidoMapper::toDomain)
+                .toList();
     }
 
     @Override
