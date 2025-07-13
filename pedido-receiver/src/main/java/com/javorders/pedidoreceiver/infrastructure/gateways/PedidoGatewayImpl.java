@@ -18,7 +18,7 @@ public class PedidoGatewayImpl implements PedidoGateway {
     @Override
     public void salvar(Pedido pedido) {
         webClient.post()
-                .uri("/pedidos")
+                .uri("/pedidos/registrar")
                 .bodyValue(pedido)
                 .retrieve()
                 .toBodilessEntity()

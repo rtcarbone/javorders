@@ -32,7 +32,7 @@ public class PedidoController {
                 .build();
     }
 
-    @PostMapping
+    @PostMapping("/registrar")
     public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
         Pedido pedido = PedidoDTOMapper.toDomain(dto);
         Pedido salvo = registrarPedidoUsecase.executar(pedido);
