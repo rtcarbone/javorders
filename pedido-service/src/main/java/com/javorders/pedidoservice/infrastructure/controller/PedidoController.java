@@ -2,9 +2,9 @@ package com.javorders.pedidoservice.infrastructure.controller;
 
 import com.javorders.pedidoservice.application.usecases.*;
 import com.javorders.pedidoservice.domain.model.Pedido;
-import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoRequestDTO;
-import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoResponseDTO;
-import com.javorders.pedidoservice.infrastructure.controller.mapper.PedidoDTOMapper;
+import com.javorders.pedidoservice.infrastructure.dto.PedidoRequestDTO;
+import com.javorders.pedidoservice.infrastructure.dto.PedidoResponseDTO;
+import com.javorders.pedidoservice.infrastructure.mapper.PedidoDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +25,6 @@ public class PedidoController {
     private final DeletarPedidoUsecase deletarPedidoUsecase;
 
     @PostMapping
-    public ResponseEntity<Void> publicarPedido(@RequestBody PedidoRequestDTO dto) {
-        Pedido pedido = PedidoDTOMapper.toDomain(dto);
-        rabbitTemplate.convertAndSend("novo-pedido-queue", pedido);
-        return ResponseEntity.accepted()
-                .build();
-    }
-
-    @PostMapping("/registrar")
     public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
         Pedido pedido = PedidoDTOMapper.toDomain(dto);
         Pedido salvo = registrarPedidoUsecase.executar(pedido);

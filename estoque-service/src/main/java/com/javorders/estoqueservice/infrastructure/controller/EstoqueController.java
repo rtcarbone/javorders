@@ -5,9 +5,9 @@ import com.javorders.estoqueservice.application.usecases.CadastrarEstoqueUsecase
 import com.javorders.estoqueservice.application.usecases.ConsultarEstoqueUsecase;
 import com.javorders.estoqueservice.application.usecases.RestaurarEstoqueUsecase;
 import com.javorders.estoqueservice.domain.model.Estoque;
-import com.javorders.estoqueservice.infrastructure.controller.dto.EstoqueRequestDTO;
-import com.javorders.estoqueservice.infrastructure.controller.dto.EstoqueResponseDTO;
-import com.javorders.estoqueservice.infrastructure.controller.mapper.EstoqueDTOMapper;
+import com.javorders.estoqueservice.infrastructure.dto.EstoqueRequestDTO;
+import com.javorders.estoqueservice.infrastructure.dto.EstoqueResponseDTO;
+import com.javorders.estoqueservice.infrastructure.mapper.EstoqueDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
