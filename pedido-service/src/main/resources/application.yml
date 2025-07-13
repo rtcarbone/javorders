@@ -1,23 +1,18 @@
+server:
+  port: 8080
+
 spring:
   datasource:
-    url: jdbc:postgresql://pedido-db:5432/pedido_db
-    username: pedido
-    password: pedido
+    url: jdbc:postgresql://postgres-pedido:5432/pedidos
+    username: user
+    password: password
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    locations: classpath:db/migration
-    baseline-on-migrate: true
+
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
-
-server:
-  port: 8084

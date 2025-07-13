@@ -1,18 +1,15 @@
+server:
+  port: 8080
+
 spring:
   datasource:
-    url: jdbc:postgresql://cliente-db:5432/cliente_db
-    username: cliente
-    password: cliente
+    url: jdbc:postgresql://postgres-cliente:5432/clientes
+    username: user
+    password: password
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-
-server:
-  port: 8081
+        format_sql: true

@@ -1,18 +1,12 @@
+server:
+  port: 8080
+
 spring:
   datasource:
-    url: jdbc:postgresql://pagamento-db:5432/pagamento_db
-    username: pagamento
-    password: pagamento
+    url: jdbc:postgresql://postgres-pagamento:5432/pagamentos
+    username: user
+    password: password
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  flyway:
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-
-server:
-  port: 8085
