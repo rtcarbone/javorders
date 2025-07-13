@@ -1,6 +1,6 @@
 package com.javorders.pedidoservice.infrastructure.listener;
 
-import com.javorders.pedidoservice.application.usecase.ProcessarPedidoUsecaseImpl;
+import com.javorders.pedidoservice.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.infrastructure.dto.PedidoRequestDTO;
 import com.javorders.pedidoservice.infrastructure.mapper.PedidoDTOMapper;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PedidoListener {
 
-    private final ProcessarPedidoUsecaseImpl usecase;
+    private final ProcessarPedidoUsecase usecase;
 
     @RabbitListener(queues = "novo-pedido-queue")
     public void receberPedido(PedidoRequestDTO dto) {
