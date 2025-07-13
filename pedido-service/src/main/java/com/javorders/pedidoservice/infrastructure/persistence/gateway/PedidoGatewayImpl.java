@@ -18,8 +18,8 @@ public class PedidoGatewayImpl implements PedidoGateway {
     @Override
     public Pedido salvar(Pedido pedido) {
         var entity = PedidoMapper.toEntity(pedido);
-        var saved = repository.save(entity);
-        return PedidoMapper.toDomain(saved);
+        var salvo = repository.save(entity);
+        return PedidoMapper.toDomain(salvo);
     }
 
     @Override
@@ -29,9 +29,7 @@ public class PedidoGatewayImpl implements PedidoGateway {
     }
 
     @Override
-    public Optional<Pedido> buscarPorUuidPagamento(String uuid) {
-        // este método será implementado futuramente com integração ao pagamento-service
-        return Optional.empty();
+    public void deletarPorId(Long id) {
+        repository.deleteById(id);
     }
-
 }

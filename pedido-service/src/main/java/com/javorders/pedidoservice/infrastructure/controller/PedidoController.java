@@ -1,15 +1,16 @@
 package com.javorders.pedidoservice.infrastructure.controller;
 
+import com.javorders.pedidoservice.application.usecases.AlterarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.ConsultarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.DeletarPedidoUsecase;
 import com.javorders.pedidoservice.application.usecases.RegistrarPedidoUsecase;
+import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoRequestDTO;
 import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoResponseDTO;
 import com.javorders.pedidoservice.infrastructure.controller.mapper.PedidoDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -17,12 +18,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class PedidoController {
 
     private final RegistrarPedidoUsecase registrarPedidoUsecase;
+    private final AlterarPedidoUsecase alterarPedidoUsecase;
+    private final ConsultarPedidoUsecase consultarPedidoUsecase;
+    private final DeletarPedidoUsecase deletarPedidoUsecase;
 
     @PostMapping
     public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
-        var pedido = PedidoDTOMapper.toDomain(dto);
-        var salvo = registrarPedidoUsecase.executar(pedido);
+        Pedido pedido = PedidoDTOMapper.toDomain(dto);
+        Pedido salvo = registrarPedidoUsecase.executar(pedido);
         return ResponseEntity.ok(PedidoDTOMapper.toResponse(salvo));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PedidoResponseDTO> alterar(@PathVariable Long id, @RequestBody PedidoRequestDTO dto) {
+        Pedido atualizado = alterarPedidoUsecase.executar(id, PedidoDTOMapper.toDomain(dto));
+        return ResponseEntity.ok(PedidoDTOMapper.toResponse(atualizado));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoResponseDTO> consultar(@PathVariable Long id) {
+        return consultarPedidoUsecase.executar(id)
+                .map(PedidoDTOMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound()
+                                .build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        deletarPedidoUsecase.executar(id);
+        return ResponseEntity.noContent()
+                .build();
     }
 
 }
