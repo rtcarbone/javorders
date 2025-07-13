@@ -1,7 +1,7 @@
 package com.javorders.pagamentoservice.infrastructure.persistence.mapper;
 
 import com.javorders.pagamentoservice.domain.model.Pagamento;
-import com.javorders.pagamentoservice.infrastructure.persistence.PagamentoEntity;
+import com.javorders.pagamentoservice.infrastructure.persistence.entity.PagamentoEntity;
 
 public class PagamentoMapper {
 

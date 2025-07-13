@@ -1,7 +1,10 @@
 package com.javorders.pedidoservice.infrastructure.controller;
 
 import com.javorders.pedidoservice.application.usecases.RegistrarPedidoUsecase;
-import com.javorders.pedidoservice.domain.model.Pedido;
+import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoRequestDTO;
+import com.javorders.pedidoservice.infrastructure.controller.dto.PedidoResponseDTO;
+import com.javorders.pedidoservice.infrastructure.controller.mapper.PedidoDTOMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,17 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/pedidos")
+@RequiredArgsConstructor
 public class PedidoController {
 
-    private final RegistrarPedidoUsecase usecase;
-
-    public PedidoController(RegistrarPedidoUsecase usecase) {
-        this.usecase = usecase;
-    }
+    private final RegistrarPedidoUsecase registrarPedidoUsecase;
 
     @PostMapping
-    public ResponseEntity<Pedido> criar(@RequestBody Pedido pedido) {
-        return ResponseEntity.ok(usecase.executar(pedido));
+    public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
+        var pedido = PedidoDTOMapper.toDomain(dto);
+        var salvo = registrarPedidoUsecase.executar(pedido);
+        return ResponseEntity.ok(PedidoDTOMapper.toResponse(salvo));
     }
 
 }

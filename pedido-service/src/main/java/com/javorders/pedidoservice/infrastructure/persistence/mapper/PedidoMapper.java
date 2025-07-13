@@ -2,8 +2,8 @@ package com.javorders.pedidoservice.infrastructure.persistence.mapper;
 
 import com.javorders.pedidoservice.domain.model.ItemPedido;
 import com.javorders.pedidoservice.domain.model.Pedido;
-import com.javorders.pedidoservice.infrastructure.persistence.ItemPedidoEntity;
-import com.javorders.pedidoservice.infrastructure.persistence.PedidoEntity;
+import com.javorders.pedidoservice.infrastructure.persistence.entity.ItemPedidoEntity;
+import com.javorders.pedidoservice.infrastructure.persistence.entity.PedidoEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

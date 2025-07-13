@@ -1,7 +1,11 @@
-package com.javorders.pedidoservice.infrastructure.persistence;
+package com.javorders.pedidoservice.infrastructure.persistence.entity;
 
+import com.javorders.pedidoservice.domain.model.StatusPedido;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -27,4 +31,5 @@ public class PedidoEntity {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedidoEntity> itens;
+
 }

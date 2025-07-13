@@ -1,6 +1,9 @@
 package com.javorders.pedidoservice.domain.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.List;
 public class Pedido {
     private Long id;
     private Long clienteId;
+    private List<ItemPedido> itens;
     private BigDecimal valorTotal;
     private StatusPedido status;
-    private List<ItemPedido> itens;
 }

@@ -1,7 +1,10 @@
-package com.javorders.pedidoservice.infrastructure.persistence;
+package com.javorders.pedidoservice.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "itens_pedido")
@@ -22,4 +25,5 @@ public class ItemPedidoEntity {
     @ManyToOne
     @JoinColumn(name = "pedido_id")
     private PedidoEntity pedido;
+
 }

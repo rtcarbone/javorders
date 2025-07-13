@@ -1,4 +1,4 @@
-package com.javorders.pagamentoservice.infrastructure.persistence;
+package com.javorders.pagamentoservice.infrastructure.persistence.entity;
 
 import com.javorders.pagamentoservice.domain.model.StatusPagamento;
 import jakarta.persistence.*;
