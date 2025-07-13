@@ -1,12 +1,14 @@
 package com.javorders.pedidoservice.infrastructure.controller;
 
-import com.javorders.pedidoservice.application.usecases.*;
+import com.javorders.pedidoservice.application.usecases.AlterarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.ConsultarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.DeletarPedidoUsecase;
+import com.javorders.pedidoservice.application.usecases.ListarPedidosUsecase;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.infrastructure.dto.PedidoRequestDTO;
 import com.javorders.pedidoservice.infrastructure.dto.PedidoResponseDTO;
 import com.javorders.pedidoservice.infrastructure.mapper.PedidoDTOMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,19 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoController {
 
-    private final RabbitTemplate rabbitTemplate;
-    private final RegistrarPedidoUsecase registrarPedidoUsecase;
     private final AlterarPedidoUsecase alterarPedidoUsecase;
     private final ConsultarPedidoUsecase consultarPedidoUsecase;
     private final ListarPedidosUsecase listarPedidosUsecase;
     private final DeletarPedidoUsecase deletarPedidoUsecase;
-
-    @PostMapping
-    public ResponseEntity<PedidoResponseDTO> registrar(@RequestBody PedidoRequestDTO dto) {
-        Pedido pedido = PedidoDTOMapper.toDomain(dto);
-        Pedido salvo = registrarPedidoUsecase.executar(pedido);
-        return ResponseEntity.ok(PedidoDTOMapper.toResponse(salvo));
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> alterar(@PathVariable Long id, @RequestBody PedidoRequestDTO dto) {

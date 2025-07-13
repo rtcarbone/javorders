@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface PagamentoGateway {
     UUID solicitarPagamento(Pedido pedido);
+    void estornar(Pedido pedido);
 }

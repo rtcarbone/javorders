@@ -26,4 +26,14 @@ public class EstoqueGatewayImpl implements EstoqueGateway {
                 .block();
     }
 
+    @Override
+    public void reporEstoque(Pedido pedido) {
+        webClient.patch()
+                .uri("/estoques/restaurar")
+                .bodyValue(pedido.getItens())
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
 }

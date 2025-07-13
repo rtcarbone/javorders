@@ -28,4 +28,14 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
                 .block();
     }
 
+    @Override
+    public void estornar(Pedido pedido) {
+        webClient.post()
+                .uri("/pagamentos/estornar")
+                .bodyValue(pedido)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+    }
+
 }

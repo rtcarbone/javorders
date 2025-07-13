@@ -4,8 +4,13 @@ import com.javorders.pedidoservice.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoservice.domain.gateways.*;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPedido;
+import com.javorders.pedidoservice.infrastructure.dto.ProdutoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,33 +24,38 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
     @Override
     public void executar(Pedido pedido) {
+        pedido.setStatus(StatusPedido.ABERTO);
+
+        // Buscar produtos
+        List<ProdutoDTO> produtos = produtoGateway.obterPorSkus(pedido.getItens());
+
+        // Calcular valor total
+        BigDecimal valorTotal = pedido.calcularValorTotal(produtos);
+        pedido.setValorTotal(valorTotal);
+
         try {
-            var cliente = clienteGateway.buscarPorId(pedido.getClienteId());
+            // Criar ordem de pagamento
+            UUID uuid = pagamentoGateway.solicitarPagamento(pedido);
+            pedido.setUuidTransacao(uuid.toString());
 
-            if (!cliente.temCreditoPara(pedido)) {
-                pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
-                pedidoGateway.salvar(pedido);
-                return;
-            }
+            try {
+                // Baixar estoque
+                estoqueGateway.baixarEstoque(pedido);
+                pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
-            var produtos = produtoGateway.obterPorSkus(pedido.getItens());
-
-            if (!pedido.temEstoqueDisponivel(produtos)) {
+            } catch (Exception e) {
+                // Falha no estoque → estorna pagamento
+                pagamentoGateway.estornar(pedido);
                 pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
-                pedidoGateway.salvar(pedido);
-                return;
             }
-
-            estoqueGateway.baixarEstoque(pedido);
-            pagamentoGateway.solicitarPagamento(pedido);
-
-            pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
-            pedidoGateway.salvar(pedido);
 
         } catch (Exception e) {
-            pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO); // fallback
-            pedidoGateway.salvar(pedido);
+            // Falha no pagamento → repor estoque
+            estoqueGateway.reporEstoque(pedido);
+            pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
         }
+
+        pedidoGateway.salvar(pedido);
     }
 
 }

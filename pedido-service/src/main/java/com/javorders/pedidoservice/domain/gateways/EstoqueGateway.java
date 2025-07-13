@@ -4,4 +4,5 @@ import com.javorders.pedidoservice.domain.model.Pedido;
 
 public interface EstoqueGateway {
     void baixarEstoque(Pedido pedido);
+    void reporEstoque(Pedido pedido);
 }
