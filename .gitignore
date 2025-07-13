@@ -1,2 +1,7 @@
 /.idea/
 /pedido-service/target/
+/cliente-service/target/
+/estoque-service/target/
+/pagamento-service/target/
+/pedido-receiver/target/
+/produto-service/target/
