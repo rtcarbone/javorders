@@ -3,6 +3,9 @@ package com.javorders.pagamentoservice.infrastructure.controller;
 import com.javorders.pagamentoservice.application.usecases.EfetuarPagamentoUsecase;
 import com.javorders.pagamentoservice.application.usecases.EstornarPagamentoUsecase;
 import com.javorders.pagamentoservice.domain.model.Pagamento;
+import com.javorders.pagamentoservice.infrastructure.dto.PagamentoRequestDTO;
+import com.javorders.pagamentoservice.infrastructure.dto.PagamentoResponseDTO;
+import com.javorders.pagamentoservice.infrastructure.mapper.PagamentoDTOMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +21,11 @@ public class PagamentoController {
     private final EstornarPagamentoUsecase estornarPagamentoUsecase;
 
     @PostMapping
-    public ResponseEntity<Pagamento> pagar(@RequestBody Pagamento pagamento) {
-        return ResponseEntity.ok(efetuarPagamentoUsecase.executar(pagamento));
+    public ResponseEntity<PagamentoResponseDTO> pagar(@RequestBody PagamentoRequestDTO dto) {
+        Pagamento pagamento = PagamentoDTOMapper.toDomain(dto);
+        Pagamento efetuado = efetuarPagamentoUsecase.executar(pagamento);
+        PagamentoResponseDTO response = PagamentoDTOMapper.toResponse(efetuado);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{uuid}/estornar")

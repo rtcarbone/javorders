@@ -14,5 +14,6 @@ public class Pagamento {
     private Long clienteId;
     private BigDecimal valor;
     private UUID uuidTransacao;
+    private String numeroCartao;
     private StatusPagamento status;
 }
