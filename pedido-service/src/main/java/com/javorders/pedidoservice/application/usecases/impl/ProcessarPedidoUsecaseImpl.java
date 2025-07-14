@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,6 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
     @Override
     public void executar(Pedido pedido) {
 
-        // Validar cliente
         ClienteDTO cliente = clienteGateway.buscarPorId(pedido.getClienteId());
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não encontrado para o ID: " + pedido.getClienteId());
@@ -36,40 +36,73 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
         pedido.setStatus(StatusPedido.ABERTO);
 
         List<ProdutoDTO> produtos = produtoGateway.obterPorSkus(pedido.getItens());
+        if (produtos.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum produto encontrado para os SKUs fornecidos.");
+        }
 
-        // Calcular valor total
-        BigDecimal valorTotal = pedido.calcularValorTotal(produtos);
+        BigDecimal valorTotal = calcularValorTotal(pedido, produtos);
         pedido.setValorTotal(valorTotal);
 
+        UUID uuidPagamento = null;
+
+        // Rastreia os itens cujo estoque foi baixado com sucesso
+        List<ItemPedido> estoqueBaixadoComSucesso = new ArrayList<>();
+
         try {
-            // Criar ordem de pagamento
-            UUID uuid = pagamentoGateway.solicitarPagamento(pedido);
-            pedido.setUuidTransacao(uuid.toString());
-
-            try {
-                // Baixar estoque item a item
-                for (ItemPedido item : pedido.getItens()) {
+            for (ItemPedido item : pedido.getItens()) {
+                try {
                     estoqueGateway.baixarEstoque(item.getSku(), item.getQuantidade());
-                }
+                    estoqueBaixadoComSucesso.add(item);
+                } catch (Exception e) {
+                    // Repor o que já foi baixado
+                    for (ItemPedido baixado : estoqueBaixadoComSucesso) {
+                        estoqueGateway.reporEstoque(baixado.getSku(), baixado.getQuantidade());
+                    }
 
+                    pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
+                    pedidoGateway.salvar(pedido);
+                    return;
+                }
+            }
+
+            // Tentativa de pagamento
+            try {
+                uuidPagamento = pagamentoGateway.solicitarPagamento(pedido);
+                pedido.setUuidTransacao(uuidPagamento.toString());
                 pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
             } catch (Exception e) {
-                // Falha no estoque: estornar pagamento
-                pagamentoGateway.estornar(pedido);
-                pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
+                // Repor o estoque de todos os itens
+                for (ItemPedido item : estoqueBaixadoComSucesso) {
+                    estoqueGateway.reporEstoque(item.getSku(), item.getQuantidade());
+                }
+
+                pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
             }
 
         } catch (Exception e) {
-            // Falha no pagamento: repor estoque
-            for (ItemPedido item : pedido.getItens()) {
-                estoqueGateway.reporEstoque(item.getSku(), item.getQuantidade());
+            if (uuidPagamento != null) {
+                pagamentoGateway.estornar(pedido);
             }
-
-            pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
+            pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
         }
 
         pedidoGateway.salvar(pedido);
+    }
+
+    private BigDecimal calcularValorTotal(Pedido pedido, List<ProdutoDTO> produtos) {
+        return pedido.getItens()
+                .stream()
+                .map(item -> {
+                    ProdutoDTO produto = produtos.stream()
+                            .filter(p -> p.sku()
+                                    .equals(item.getSku()))
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + item.getSku()));
+                    return produto.preco()
+                            .multiply(BigDecimal.valueOf(item.getQuantidade()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }
