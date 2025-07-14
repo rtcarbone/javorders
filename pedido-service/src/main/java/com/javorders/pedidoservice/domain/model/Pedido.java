@@ -18,5 +18,6 @@ public class Pedido {
     private List<ItemPedido> itens;
     private BigDecimal valorTotal;
     private StatusPedido status;
+    private String numeroCartao;
     private String uuidTransacao;
 }

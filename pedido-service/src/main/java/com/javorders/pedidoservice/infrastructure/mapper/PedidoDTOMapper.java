@@ -25,7 +25,8 @@ public class PedidoDTOMapper {
         Pedido pedido = Pedido.builder()
                 .clienteId(dto.clienteId())
                 .itens(itens)
-                .valorTotal(total) // valor será ajustado futuramente via integração
+                .numeroCartao(dto.numeroCartao())
+                .valorTotal(total)
                 .build();
 
         return pedido;
