@@ -4,6 +4,7 @@ import com.javorders.pedidoservice.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoservice.domain.gateways.*;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPedido;
+import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;
 import com.javorders.pedidoservice.infrastructure.dto.ProdutoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,13 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
     @Override
     public void executar(Pedido pedido) {
+
+        // Validar cliente
+        ClienteDTO cliente = clienteGateway.buscarPorId(pedido.getClienteId());
+        if (cliente == null) {
+            throw new IllegalArgumentException("Cliente não encontrado para o ID: " + pedido.getClienteId());
+        }
+
         pedido.setStatus(StatusPedido.ABERTO);
 
         List<ProdutoDTO> produtos = produtoGateway.obterPorSkus(pedido.getItens());
