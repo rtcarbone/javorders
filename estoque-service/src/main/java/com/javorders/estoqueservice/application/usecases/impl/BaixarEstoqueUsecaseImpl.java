@@ -13,6 +13,13 @@ public class BaixarEstoqueUsecaseImpl implements BaixarEstoqueUsecase {
 
     @Override
     public void executar(String sku, Integer quantidade) {
+        var estoque = estoqueGateway.buscarPorSku(sku)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + sku));
+
+        if (estoque.getQuantidade() < quantidade) {
+            throw new RuntimeException("Estoque insuficiente para o produto: " + sku);
+        }
+
         estoqueGateway.baixarEstoque(sku, quantidade);
     }
 
