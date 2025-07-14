@@ -1,7 +1,7 @@
 package com.javorders.pedidoservice.infrastructure.persistence.gateway;
 
 import com.javorders.pedidoservice.domain.gateways.EstoqueGateway;
-import com.javorders.pedidoservice.domain.model.Pedido;
+import com.javorders.pedidoservice.infrastructure.dto.EstoqueRequestDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,20 +17,24 @@ public class EstoqueGatewayImpl implements EstoqueGateway {
     }
 
     @Override
-    public void baixarEstoque(Pedido pedido) {
+    public void baixarEstoque(String sku, Integer quantidade) {
+        EstoqueRequestDTO dto = new EstoqueRequestDTO(sku, quantidade);
+
         webClient.patch()
                 .uri("/estoques/baixar")
-                .bodyValue(pedido.getItens())
+                .bodyValue(dto)
                 .retrieve()
                 .toBodilessEntity()
                 .block();
     }
 
     @Override
-    public void reporEstoque(Pedido pedido) {
+    public void reporEstoque(String sku, Integer quantidade) {
+        EstoqueRequestDTO dto = new EstoqueRequestDTO(sku, quantidade);
+
         webClient.patch()
                 .uri("/estoques/restaurar")
-                .bodyValue(pedido.getItens())
+                .bodyValue(dto)
                 .retrieve()
                 .toBodilessEntity()
                 .block();

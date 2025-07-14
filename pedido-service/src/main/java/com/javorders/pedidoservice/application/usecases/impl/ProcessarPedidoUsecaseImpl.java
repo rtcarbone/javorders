@@ -2,6 +2,7 @@ package com.javorders.pedidoservice.application.usecases.impl;
 
 import com.javorders.pedidoservice.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoservice.domain.gateways.*;
+import com.javorders.pedidoservice.domain.model.ItemPedido;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPedido;
 import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;
@@ -46,19 +47,25 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             pedido.setUuidTransacao(uuid.toString());
 
             try {
-                // Baixar estoque
-                estoqueGateway.baixarEstoque(pedido);
+                // Baixar estoque item a item
+                for (ItemPedido item : pedido.getItens()) {
+                    estoqueGateway.baixarEstoque(item.getSku(), item.getQuantidade());
+                }
+
                 pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
             } catch (Exception e) {
-                // Falha no estoque: estorna pagamento
+                // Falha no estoque: estornar pagamento
                 pagamentoGateway.estornar(pedido);
                 pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
             }
 
         } catch (Exception e) {
             // Falha no pagamento: repor estoque
-            estoqueGateway.reporEstoque(pedido);
+            for (ItemPedido item : pedido.getItens()) {
+                estoqueGateway.reporEstoque(item.getSku(), item.getQuantidade());
+            }
+
             pedido.setStatus(StatusPedido.FECHADO_SEM_CREDITO);
         }
 
