@@ -2,9 +2,9 @@ package com.javorders.pagamentoservice.application.usecases.impl;
 
 import com.javorders.pagamentoservice.application.usecases.EfetuarPagamentoUsecase;
 import com.javorders.pagamentoservice.domain.gateways.PagamentoGateway;
-import com.javorders.pagamentoservice.domain.gateways.SistemaPagamentoExternoGateway;
 import com.javorders.pagamentoservice.domain.model.Pagamento;
 import com.javorders.pagamentoservice.domain.model.StatusPagamento;
+import com.javorders.pagamentoservice.domain.ports.out.PagamentoExternoAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EfetuarPagamentoUsecaseImpl implements EfetuarPagamentoUsecase {
 
-    private final SistemaPagamentoExternoGateway externoGateway;
+    private final PagamentoExternoAdapter externoGateway;
     private final PagamentoGateway pagamentoGateway;
 
     @Override
