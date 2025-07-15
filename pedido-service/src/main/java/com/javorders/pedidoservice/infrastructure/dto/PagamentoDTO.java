@@ -1,7 +1,9 @@
 package com.javorders.pedidoservice.infrastructure.dto;
 
+import java.util.UUID;
+
 public record PagamentoDTO(
-        Long uuidTransacao,
+        UUID uuidTransacao,
         String status
 ) {
 }

@@ -2,12 +2,7 @@ package com.javorders.pedidoservice.application.usecases.impl;
 
 import com.javorders.pedidoservice.application.usecases.ProcessarPedidoUsecase;
 import com.javorders.pedidoservice.domain.gateways.*;
-import com.javorders.pedidoservice.domain.model.ItemPedido;
-import com.javorders.pedidoservice.domain.model.Pedido;
-import com.javorders.pedidoservice.domain.model.StatusPedido;
-import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;
-import com.javorders.pedidoservice.infrastructure.dto.PagamentoDTO;
-import com.javorders.pedidoservice.infrastructure.dto.ProdutoDTO;
+import com.javorders.pedidoservice.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +23,14 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
     @Override
     public void executar(Pedido pedido) {
 
-        ClienteDTO cliente = clienteGateway.buscarPorId(pedido.getClienteId());
+        Cliente cliente = clienteGateway.buscarPorId(pedido.getClienteId());
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não encontrado para o ID: " + pedido.getClienteId());
         }
 
         pedido.setStatus(StatusPedido.ABERTO);
 
-        List<ProdutoDTO> produtos = produtoGateway.obterPorSkus(pedido.getItens());
+        List<Produto> produtos = produtoGateway.obterPorSkus(pedido.getItens());
         if (produtos.isEmpty()) {
             throw new IllegalArgumentException("Nenhum produto encontrado para os SKUs fornecidos.");
         }
@@ -43,7 +38,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
         BigDecimal valorTotal = calcularValorTotal(pedido, produtos);
         pedido.setValorTotal(valorTotal);
 
-        PagamentoDTO pagamento = null;
+        Pagamento pagamento = null;
 
         // Rastreia os itens cujo estoque foi baixado com sucesso
         List<ItemPedido> estoqueBaixadoComSucesso = new ArrayList<>();
@@ -69,13 +64,11 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             try {
                 pagamento = pagamentoGateway.solicitarPagamento(pedido);
 
-                if (pagamento.status()
-                        .equals("RECUSADO")) {
+                if (StatusPagamento.RECUSADO.equals(pagamento.getStatus())) {
                     throw new RuntimeException("Pagamento recusado");
                 }
 
-                pedido.setUuidTransacao(pagamento.uuidTransacao()
-                                                .toString());
+                pedido.setUuidTransacao(pagamento.getUuidTransacao());
                 pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
             } catch (Exception e) {
@@ -88,8 +81,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             }
 
         } catch (Exception e) {
-            if (pagamento != null && pagamento.status()
-                    .equals("APROVADO")) {
+            if (pagamento != null && StatusPagamento.APROVADO.equals(pagamento.getStatus())) {
                 pagamentoGateway.estornar(pedido);
             }
             pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
@@ -98,16 +90,16 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
         pedidoGateway.salvar(pedido);
     }
 
-    private BigDecimal calcularValorTotal(Pedido pedido, List<ProdutoDTO> produtos) {
+    private BigDecimal calcularValorTotal(Pedido pedido, List<Produto> produtos) {
         return pedido.getItens()
                 .stream()
                 .map(item -> {
-                    ProdutoDTO produto = produtos.stream()
-                            .filter(p -> p.sku()
+                    Produto produto = produtos.stream()
+                            .filter(p -> p.getSku()
                                     .equals(item.getSku()))
                             .findFirst()
                             .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + item.getSku()));
-                    return produto.preco()
+                    return produto.getPreco()
                             .multiply(BigDecimal.valueOf(item.getQuantidade()));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

@@ -5,20 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pedido {
-    private Long id;
-    private Long clienteId;
-    private List<ItemPedido> itens;
-    private BigDecimal valorTotal;
-    private StatusPedido status;
-    private String numeroCartao;
+public class Pagamento {
     private UUID uuidTransacao;
+    private StatusPagamento status;
 }

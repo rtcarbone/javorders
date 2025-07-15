@@ -1,7 +1,7 @@
 package com.javorders.pedidoservice.domain.gateways;
 
-import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;
+import com.javorders.pedidoservice.domain.model.Cliente;
 
 public interface ClienteGateway {
-    ClienteDTO buscarPorId(Long id);
+    Cliente buscarPorId(Long id);
 }
