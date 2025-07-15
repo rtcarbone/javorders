@@ -12,5 +12,7 @@ public interface ProdutoGateway {
 
     List<Produto> listarTodos();
 
+    List<Produto> buscarPorSkus(List<String> skus);
+
     void deletar(Long id);
 }

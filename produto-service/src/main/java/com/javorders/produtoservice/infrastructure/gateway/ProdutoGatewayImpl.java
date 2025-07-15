@@ -38,6 +38,14 @@ public class ProdutoGatewayImpl implements ProdutoGateway {
     }
 
     @Override
+    public List<Produto> buscarPorSkus(List<String> skus) {
+        return repository.findBySkuIn(skus)
+                .stream()
+                .map(ProdutoMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public void deletar(Long id) {
         repository.deleteById(id);
     }

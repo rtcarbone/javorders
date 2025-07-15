@@ -1,9 +1,6 @@
 package com.javorders.produtoservice.infrastructure.controller;
 
-import com.javorders.produtoservice.application.usecases.AlterarProdutoUsecase;
-import com.javorders.produtoservice.application.usecases.CadastrarProdutoUsecase;
-import com.javorders.produtoservice.application.usecases.ConsultarProdutosUsecase;
-import com.javorders.produtoservice.application.usecases.DeletarProdutoUsecase;
+import com.javorders.produtoservice.application.usecases.*;
 import com.javorders.produtoservice.infrastructure.dto.ProdutoRequestDTO;
 import com.javorders.produtoservice.infrastructure.dto.ProdutoResponseDTO;
 import com.javorders.produtoservice.infrastructure.mapper.ProdutoRequestMapper;
@@ -22,6 +19,7 @@ public class ProdutoController {
     private final CadastrarProdutoUsecase cadastrarProdutoUsecase;
     private final AlterarProdutoUsecase alterarProdutoUsecase;
     private final DeletarProdutoUsecase deletarProdutoUsecase;
+    private final ConsultarProdutosPorSkuUsecase consultarProdutosPorSkuUsecase;
     private final ConsultarProdutosUsecase consultarProdutosUsecase;
 
     @PostMapping
@@ -41,6 +39,16 @@ public class ProdutoController {
         deletarProdutoUsecase.executar(id);
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @PostMapping("/por-skus")
+    public ResponseEntity<List<ProdutoResponseDTO>> buscarPorSkus(@RequestBody List<String> skus) {
+        var produtos = consultarProdutosPorSkuUsecase.executar(skus)
+                .stream()
+                .map(ProdutoResponseMapper::toResponse)
+                .toList();
+
+        return ResponseEntity.ok(produtos);
     }
 
     @GetMapping
