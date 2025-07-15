@@ -1,9 +1,6 @@
 package com.javorders.clienteservice.infrastructure.controller;
 
-import com.javorders.clienteservice.application.usecases.AlterarClienteUsecase;
-import com.javorders.clienteservice.application.usecases.CadastrarClienteUsecase;
-import com.javorders.clienteservice.application.usecases.ConsultarClientesUsecase;
-import com.javorders.clienteservice.application.usecases.DeletarClienteUsecase;
+import com.javorders.clienteservice.application.usecases.*;
 import com.javorders.clienteservice.infrastructure.dto.ClienteRequestDTO;
 import com.javorders.clienteservice.infrastructure.dto.ClienteResponseDTO;
 import com.javorders.clienteservice.infrastructure.mapper.ClienteRequestMapper;
@@ -22,6 +19,7 @@ public class ClienteController {
     private final CadastrarClienteUsecase cadastrarClienteUsecase;
     private final AlterarClienteUsecase alterarClienteUsecase;
     private final DeletarClienteUsecase deletarClienteUsecase;
+    private final BuscarClientePorIdUsecase buscarClientePorIdUsecase;
     private final ConsultarClientesUsecase consultarClientesUsecase;
 
     @PostMapping
@@ -43,6 +41,15 @@ public class ClienteController {
         deletarClienteUsecase.executar(id);
         return ResponseEntity.noContent()
                 .build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteResponseDTO> buscarPorId(@PathVariable Long id) {
+        return buscarClientePorIdUsecase.executar(id)
+                .map(ClienteResponseMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound()
+                                .build());
     }
 
     @GetMapping
