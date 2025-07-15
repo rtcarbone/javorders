@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +69,8 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             try {
                 pagamento = pagamentoGateway.solicitarPagamento(pedido);
 
-                if (Objects.equals(pagamento.status(), "RECUSADO")) {
+                if (pagamento.status()
+                        .equals("RECUSADO")) {
                     throw new RuntimeException("Pagamento recusado");
                 }
 
