@@ -1,4 +1,4 @@
-package com.javorders.pedidoservice.infrastructure.persistence.gateway;
+package com.javorders.pedidoservice.infrastructure.gateway;
 
 import com.javorders.pedidoservice.domain.gateways.ClienteGateway;
 import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;

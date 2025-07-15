@@ -1,4 +1,4 @@
-package com.javorders.produtoservice.infrastructure.persistence.gateway;
+package com.javorders.produtoservice.infrastructure.gateway;
 
 import com.javorders.produtoservice.domain.gateways.ProdutoGateway;
 import com.javorders.produtoservice.domain.model.Produto;

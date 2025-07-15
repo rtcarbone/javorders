@@ -1,4 +1,4 @@
-package com.javorders.estoqueservice.infrastructure.persistence.gateway;
+package com.javorders.estoqueservice.infrastructure.gateway;
 
 import com.javorders.estoqueservice.domain.gateways.EstoqueGateway;
 import com.javorders.estoqueservice.domain.model.Estoque;

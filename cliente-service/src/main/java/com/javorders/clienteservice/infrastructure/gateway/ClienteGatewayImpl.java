@@ -1,4 +1,4 @@
-package com.javorders.clienteservice.infrastructure.persistence.gateway;
+package com.javorders.clienteservice.infrastructure.gateway;
 
 import com.javorders.clienteservice.domain.gateways.ClienteGateway;
 import com.javorders.clienteservice.domain.model.Cliente;

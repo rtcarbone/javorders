@@ -1,4 +1,4 @@
-package com.javorders.pagamentoservice.infrastructure.persistence.gateway;
+package com.javorders.pagamentoservice.infrastructure.gateway;
 
 import com.javorders.pagamentoservice.domain.gateways.PagamentoGateway;
 import com.javorders.pagamentoservice.domain.model.Pagamento;

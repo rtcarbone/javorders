@@ -1,4 +1,4 @@
-package com.javorders.pedidoservice.infrastructure.persistence.gateway;
+package com.javorders.pedidoservice.infrastructure.gateway;
 
 import com.javorders.pedidoservice.domain.gateways.PagamentoGateway;
 import com.javorders.pedidoservice.domain.model.Pedido;
