@@ -2,10 +2,9 @@ package com.javorders.pedidoservice.infrastructure.persistence.gateway;
 
 import com.javorders.pedidoservice.domain.gateways.PagamentoGateway;
 import com.javorders.pedidoservice.domain.model.Pedido;
+import com.javorders.pedidoservice.infrastructure.dto.PagamentoDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.UUID;
 
 @Component
 public class PagamentoGatewayImpl implements PagamentoGateway {
@@ -19,12 +18,12 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
     }
 
     @Override
-    public UUID solicitarPagamento(Pedido pedido) {
+    public PagamentoDTO solicitarPagamento(Pedido pedido) {
         return webClient.post()
                 .uri("/pagamentos")
                 .bodyValue(pedido)
                 .retrieve()
-                .bodyToMono(UUID.class)
+                .bodyToMono(PagamentoDTO.class)
                 .block();
     }
 

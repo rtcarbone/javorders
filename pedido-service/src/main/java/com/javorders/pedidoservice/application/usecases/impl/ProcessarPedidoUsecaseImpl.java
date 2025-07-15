@@ -6,6 +6,7 @@ import com.javorders.pedidoservice.domain.model.ItemPedido;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPedido;
 import com.javorders.pedidoservice.infrastructure.dto.ClienteDTO;
+import com.javorders.pedidoservice.infrastructure.dto.PagamentoDTO;
 import com.javorders.pedidoservice.infrastructure.dto.ProdutoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
         BigDecimal valorTotal = calcularValorTotal(pedido, produtos);
         pedido.setValorTotal(valorTotal);
 
-        UUID uuidPagamento = null;
+        PagamentoDTO pagamento = null;
 
         // Rastreia os itens cujo estoque foi baixado com sucesso
         List<ItemPedido> estoqueBaixadoComSucesso = new ArrayList<>();
@@ -67,8 +68,14 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
 
             // Tentativa de pagamento
             try {
-                uuidPagamento = pagamentoGateway.solicitarPagamento(pedido);
-                pedido.setUuidTransacao(uuidPagamento.toString());
+                pagamento = pagamentoGateway.solicitarPagamento(pedido);
+
+                if (Objects.equals(pagamento.status(), "RECUSADO")) {
+                    throw new RuntimeException("Pagamento recusado");
+                }
+
+                pedido.setUuidTransacao(pagamento.uuidTransacao()
+                                                .toString());
                 pedido.setStatus(StatusPedido.FECHADO_COM_SUCESSO);
 
             } catch (Exception e) {
@@ -81,7 +88,8 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             }
 
         } catch (Exception e) {
-            if (uuidPagamento != null) {
+            if (pagamento != null && pagamento.status()
+                    .equals("APROVADO")) {
                 pagamentoGateway.estornar(pedido);
             }
             pedido.setStatus(StatusPedido.FECHADO_SEM_ESTOQUE);
