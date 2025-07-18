@@ -66,30 +66,18 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             try {
                 pagamento = pagamentoGateway.solicitarPagamento(pedido);
 
-                if (StatusPagamento.RECUSADO.equals(pagamento.getStatus())) {
-                    throw new RuntimeException("Pagamento recusado");
-                }
-
                 pedido = pedido.toBuilder()
                         .uuidTransacao(pagamento.getUuidTransacao())
-                        .status(StatusPedido.FECHADO_COM_SUCESSO)
                         .build();
 
             } catch (Exception e) {
                 for (ItemPedido item : estoqueBaixadoComSucesso) {
                     estoqueGateway.reporEstoque(item.getSku(), item.getQuantidade());
                 }
-
-                pedido = pedido.toBuilder()
-                        .status(StatusPedido.FECHADO_SEM_CREDITO)
-                        .build();
+                throw new RuntimeException("Estoque insuficiente ou erro ao processar pagamento", e);
             }
 
         } catch (Exception e) {
-            if (pagamento != null && StatusPagamento.APROVADO.equals(pagamento.getStatus())) {
-                pagamentoGateway.estornar(pedido);
-            }
-
             pedido = pedido.toBuilder()
                     .status(StatusPedido.FECHADO_SEM_ESTOQUE)
                     .build();
