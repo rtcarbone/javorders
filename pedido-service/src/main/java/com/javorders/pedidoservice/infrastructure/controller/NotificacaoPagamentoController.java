@@ -1,7 +1,7 @@
 package com.javorders.pedidoservice.infrastructure.controller;
 
 import com.javorders.pedidoservice.application.usecases.ProcessarNotificacaoPagamentoUsecase;
-import com.javorders.pedidoservice.infrastructure.dto.NotificacaoPagamentoRequest;
+import com.javorders.pedidoservice.infrastructure.dto.NotificacaoPagamentoRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +17,7 @@ public class NotificacaoPagamentoController {
     private final ProcessarNotificacaoPagamentoUsecase usecase;
 
     @PostMapping("/notificacao")
-    public ResponseEntity<Void> receberNotificacao(@RequestBody NotificacaoPagamentoRequest request) {
+    public ResponseEntity<Void> receberNotificacao(@RequestBody NotificacaoPagamentoRequestDTO request) {
         usecase.executar(request.uuidTransacao());
         return ResponseEntity.ok()
                 .build();
