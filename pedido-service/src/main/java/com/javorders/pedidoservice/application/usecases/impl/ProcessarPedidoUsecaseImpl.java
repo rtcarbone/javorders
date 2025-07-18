@@ -41,7 +41,6 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
                 .valorTotal(valorTotal)
                 .build();
 
-        Pagamento pagamento = null;
         List<ItemPedido> estoqueBaixadoComSucesso = new ArrayList<>();
 
         try {
@@ -64,7 +63,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             }
 
             try {
-                pagamento = pagamentoGateway.solicitarPagamento(pedido);
+                Pagamento pagamento = pagamentoGateway.solicitarPagamento(pedido);
 
                 pedido = pedido.toBuilder()
                         .uuidTransacao(pagamento.getUuidTransacao())
@@ -74,7 +73,6 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
                 for (ItemPedido item : estoqueBaixadoComSucesso) {
                     estoqueGateway.reporEstoque(item.getSku(), item.getQuantidade());
                 }
-                throw new RuntimeException("Estoque insuficiente ou erro ao processar pagamento", e);
             }
 
         } catch (Exception e) {
