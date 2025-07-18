@@ -1,7 +1,8 @@
 package com.javorders.pagamentoservice.infrastructure.controller;
 
-import com.javorders.pagamentoservice.application.usecases.SolicitarPagamentoUsecase;
+import com.javorders.pagamentoservice.application.usecases.BuscarPagamentoPorUuidUsecase;
 import com.javorders.pagamentoservice.application.usecases.EstornarPagamentoUsecase;
+import com.javorders.pagamentoservice.application.usecases.SolicitarPagamentoUsecase;
 import com.javorders.pagamentoservice.domain.model.Pagamento;
 import com.javorders.pagamentoservice.infrastructure.dto.PagamentoRequestDTO;
 import com.javorders.pagamentoservice.infrastructure.dto.PagamentoResponseDTO;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class PagamentoController {
 
     private final SolicitarPagamentoUsecase solicitarPagamentoUsecase;
+    private final BuscarPagamentoPorUuidUsecase buscarPagamentoPorUuidUsecase;
     private final EstornarPagamentoUsecase estornarPagamentoUsecase;
 
     @PostMapping
@@ -26,6 +28,12 @@ public class PagamentoController {
         Pagamento efetuado = solicitarPagamentoUsecase.executar(pagamento);
         PagamentoResponseDTO response = PagamentoDTOMapper.toResponse(efetuado);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<Pagamento> buscarPorUuid(@PathVariable UUID uuid) {
+        Pagamento pagamento = buscarPagamentoPorUuidUsecase.executar(uuid);
+        return ResponseEntity.ok(pagamento);
     }
 
     @PatchMapping("/{uuid}/estornar")

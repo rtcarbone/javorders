@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +27,12 @@ public class PedidoGatewayImpl implements PedidoGateway {
     @Override
     public Optional<Pedido> buscarPorId(Long id) {
         return repository.findById(id)
+                .map(PedidoMapper::toDomain);
+    }
+
+    @Override
+    public Optional<Pedido> buscarPorUuidTransacao(UUID uuidTransacao) {
+        return repository.findByUuidTransacao(uuidTransacao)
                 .map(PedidoMapper::toDomain);
     }
 

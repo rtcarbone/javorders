@@ -8,6 +8,9 @@ import com.javorders.pedidoservice.infrastructure.dto.PagamentoDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 public class PagamentoGatewayImpl implements PagamentoGateway {
 
@@ -28,6 +31,17 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
                 .bodyToMono(PagamentoDTO.class)
                 .map(dto -> new Pagamento(dto.uuidTransacao(), StatusPagamento.valueOf(dto.status())))
                 .block();
+    }
+
+    @Override
+    public Optional<Pagamento> buscarPorUuid(UUID uuid) {
+        Pagamento pagamento = webClient.get()
+                .uri("/pagamentos/{uuid}", uuid)
+                .retrieve()
+                .bodyToMono(Pagamento.class)
+                .block();
+
+        return Optional.ofNullable(pagamento);
     }
 
     @Override
