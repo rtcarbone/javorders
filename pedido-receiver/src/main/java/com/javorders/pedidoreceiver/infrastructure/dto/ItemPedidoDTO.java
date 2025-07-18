@@ -1,4 +1,4 @@
-package com.javorders.pedidoreceiver.infrastructure.controller.dto;
+package com.javorders.pedidoreceiver.infrastructure.dto;
 
 public record ItemPedidoDTO(
         String sku,

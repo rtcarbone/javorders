@@ -1,8 +1,9 @@
 package com.javorders.pedidoreceiver.infrastructure.controller;
 
-import com.javorders.pedidoreceiver.infrastructure.controller.dto.PedidoRequestDTO;
+import com.javorders.pedidoreceiver.application.usecases.PublicarPedidoUsecase;
+import com.javorders.pedidoreceiver.infrastructure.dto.PedidoDTO;
+import com.javorders.pedidoreceiver.infrastructure.mapper.PedidoMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PedidoController {
 
-    private final RabbitTemplate rabbitTemplate;
+    private final PublicarPedidoUsecase publicarPedidoUsecase;
+    private final PedidoMapper pedidoMapper;
 
     @PostMapping
-    public ResponseEntity<Void> publicarPedido(@RequestBody PedidoRequestDTO dto) {
-        rabbitTemplate.convertAndSend("novo-pedido-queue", dto);
+    public ResponseEntity<Void> publicarPedido(@RequestBody PedidoDTO dto) {
+        var pedido = pedidoMapper.toDomain(dto);
+        publicarPedidoUsecase.executar(pedido);
         return ResponseEntity.accepted()
                 .build();
     }
-
 }

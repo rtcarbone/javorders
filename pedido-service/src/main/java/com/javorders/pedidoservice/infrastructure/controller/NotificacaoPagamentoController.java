@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/pagamentos")
+@RequestMapping("/notificacoes-pagamento")
 public class NotificacaoPagamentoController {
 
     private final ProcessarNotificacaoPagamentoUsecase usecase;
 
-    @PostMapping("/notificacao")
+    @PostMapping
     public ResponseEntity<Void> receberNotificacao(@RequestBody NotificacaoPagamentoRequestDTO request) {
         usecase.executar(request.uuidTransacao());
         return ResponseEntity.ok()
                 .build();
     }
+
 }
