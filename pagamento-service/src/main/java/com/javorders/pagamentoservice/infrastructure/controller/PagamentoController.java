@@ -1,6 +1,6 @@
 package com.javorders.pagamentoservice.infrastructure.controller;
 
-import com.javorders.pagamentoservice.application.usecases.EfetuarPagamentoUsecase;
+import com.javorders.pagamentoservice.application.usecases.SolicitarPagamentoUsecase;
 import com.javorders.pagamentoservice.application.usecases.EstornarPagamentoUsecase;
 import com.javorders.pagamentoservice.domain.model.Pagamento;
 import com.javorders.pagamentoservice.infrastructure.dto.PagamentoRequestDTO;
@@ -17,13 +17,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PagamentoController {
 
-    private final EfetuarPagamentoUsecase efetuarPagamentoUsecase;
+    private final SolicitarPagamentoUsecase solicitarPagamentoUsecase;
     private final EstornarPagamentoUsecase estornarPagamentoUsecase;
 
     @PostMapping
     public ResponseEntity<PagamentoResponseDTO> pagar(@RequestBody PagamentoRequestDTO dto) {
         Pagamento pagamento = PagamentoDTOMapper.toDomain(dto);
-        Pagamento efetuado = efetuarPagamentoUsecase.executar(pagamento);
+        Pagamento efetuado = solicitarPagamentoUsecase.executar(pagamento);
         PagamentoResponseDTO response = PagamentoDTOMapper.toResponse(efetuado);
         return ResponseEntity.ok(response);
     }
