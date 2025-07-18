@@ -28,11 +28,13 @@ public class AlterarClienteUsecaseImpl implements AlterarClienteUsecase {
                 });
 
         // Atualiza os dados do cliente existente
-        existente.setNome(clienteAtualizado.getNome());
-        existente.setCpf(clienteAtualizado.getCpf());
-        existente.setDataNascimento(clienteAtualizado.getDataNascimento());
-        existente.setEnderecos(clienteAtualizado.getEnderecos());
+        var clienteAtualizadoComId = existente.toBuilder()
+                .nome(clienteAtualizado.getNome())
+                .cpf(clienteAtualizado.getCpf())
+                .dataNascimento(clienteAtualizado.getDataNascimento())
+                .enderecos(clienteAtualizado.getEnderecos())
+                .build();
 
-        return gateway.salvar(existente);
+        return gateway.salvar(clienteAtualizadoComId);
     }
 }

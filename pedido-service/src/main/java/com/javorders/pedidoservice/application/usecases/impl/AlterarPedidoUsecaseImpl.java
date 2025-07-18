@@ -14,8 +14,11 @@ public class AlterarPedidoUsecaseImpl implements AlterarPedidoUsecase {
 
     @Override
     public Pedido executar(Long id, Pedido pedido) {
-        pedido.setId(id);
-        return pedidoGateway.salvar(pedido);
+        var pedidoAtualizado = pedido.toBuilder()
+                .id(id)
+                .build();
+
+        return pedidoGateway.salvar(pedidoAtualizado);
     }
 
 }

@@ -20,8 +20,11 @@ public class EstornarPagamentoUsecaseImpl implements EstornarPagamentoUsecase {
         Pagamento pagamento = pagamentoGateway.findByUuidTransacao(uuidTransacao)
                 .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
-        pagamento.setStatus(StatusPagamento.ESTORNADO);
-        pagamentoGateway.salvar(pagamento);
+        var pagamentoAtualizado = pagamento.toBuilder()
+                .status(StatusPagamento.ESTORNADO)
+                .build();
+
+        pagamentoGateway.salvar(pagamentoAtualizado);
     }
 
 }

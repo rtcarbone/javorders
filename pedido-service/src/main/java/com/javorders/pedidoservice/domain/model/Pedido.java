@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pedido {
@@ -21,4 +21,18 @@ public class Pedido {
     private StatusPedido status;
     private String numeroCartao;
     private UUID uuidTransacao;
+
+    public BigDecimal calcularValorTotal(List<Produto> produtos) {
+        return itens.stream()
+                .map(item -> {
+                    Produto produto = produtos.stream()
+                            .filter(p -> p.getSku()
+                                    .equals(item.getSku()))
+                            .findFirst()
+                            .orElseThrow(() -> new RuntimeException("Produto não encontrado: " + item.getSku()));
+                    return produto.getPreco()
+                            .multiply(BigDecimal.valueOf(item.getQuantidade()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }
