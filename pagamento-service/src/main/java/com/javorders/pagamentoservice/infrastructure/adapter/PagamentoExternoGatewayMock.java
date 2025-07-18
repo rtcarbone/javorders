@@ -1,13 +1,13 @@
 package com.javorders.pagamentoservice.infrastructure.adapter;
 
 import com.javorders.pagamentoservice.domain.model.Pagamento;
-import com.javorders.pagamentoservice.domain.ports.out.PagamentoExternoAdapter;
+import com.javorders.pagamentoservice.domain.ports.out.PagamentoExternoGateway;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
-public class PagamentoExternoAdapterMock implements PagamentoExternoAdapter {
+public class PagamentoExternoGatewayMock implements PagamentoExternoGateway {
 
     @Override
     public UUID solicitarPagamento(Pagamento pagamento) {

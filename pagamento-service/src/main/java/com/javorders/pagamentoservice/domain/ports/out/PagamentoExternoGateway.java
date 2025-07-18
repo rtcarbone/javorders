@@ -4,6 +4,6 @@ import com.javorders.pagamentoservice.domain.model.Pagamento;
 
 import java.util.UUID;
 
-public interface PagamentoExternoAdapter {
+public interface PagamentoExternoGateway {
     UUID solicitarPagamento(Pagamento pagamento);
 }
