@@ -23,10 +23,10 @@ public class PagamentoController {
     private final EstornarPagamentoUsecase estornarPagamentoUsecase;
 
     @PostMapping
-    public ResponseEntity<PagamentoResponseDTO> pagar(@RequestBody PagamentoRequestDTO dto) {
+    public ResponseEntity<PagamentoResponseDTO> solicitarPagamento(@RequestBody PagamentoRequestDTO dto) {
         Pagamento pagamento = PagamentoDTOMapper.toDomain(dto);
-        Pagamento efetuado = solicitarPagamentoUsecase.executar(pagamento);
-        PagamentoResponseDTO response = PagamentoDTOMapper.toResponse(efetuado);
+        Pagamento solicitado = solicitarPagamentoUsecase.executar(pagamento);
+        PagamentoResponseDTO response = PagamentoDTOMapper.toResponse(solicitado);
         return ResponseEntity.ok(response);
     }
 

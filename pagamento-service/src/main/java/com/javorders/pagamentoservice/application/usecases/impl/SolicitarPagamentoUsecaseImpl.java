@@ -20,10 +20,7 @@ public class SolicitarPagamentoUsecaseImpl implements SolicitarPagamentoUsecase 
         var uuid = externoGateway.solicitarPagamento(pagamento);
         var pagamentoAtualizado = pagamento.toBuilder()
                 .uuidTransacao(uuid)
-                .status(uuid.toString()
-                                .endsWith("0")
-                                ? StatusPagamento.RECUSADO
-                                : StatusPagamento.APROVADO)
+                .status(StatusPagamento.PENDENTE)
                 .build();
         return pagamentoGateway.salvar(pagamentoAtualizado);
     }
