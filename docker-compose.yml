@@ -113,6 +113,8 @@ services:
 
   pedido-receiver:
     build: ./pedido-receiver
+    ports:
+      - "8086:8080"
     depends_on:
       - rabbitmq
       - cliente-service
