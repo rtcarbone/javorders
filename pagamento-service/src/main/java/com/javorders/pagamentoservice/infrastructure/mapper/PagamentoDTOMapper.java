@@ -8,6 +8,7 @@ public class PagamentoDTOMapper {
 
     public static Pagamento toDomain(PagamentoRequestDTO dto) {
         return Pagamento.builder()
+                .clienteId(dto.clienteId())
                 .valor(dto.valor())
                 .numeroCartao(dto.numeroCartao())
                 .build();
