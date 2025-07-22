@@ -6,7 +6,6 @@ import com.javorders.pedidoservice.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +35,7 @@ public class ProcessarPedidoUsecaseImpl implements ProcessarPedidoUsecase {
             throw new IllegalArgumentException("Nenhum produto encontrado para os SKUs fornecidos.");
         }
 
-        BigDecimal valorTotal = pedido.calcularValorTotal(produtos);
-        pedido = pedido.toBuilder()
-                .valorTotal(valorTotal)
-                .build();
+        pedido = Pedido.criarComValorCalculado(pedido.getClienteId(), pedido.getItens(), produtos, pedido.getNumeroCartao(), pedido.getStatus());
 
         List<ItemPedido> estoqueBaixadoComSucesso = new ArrayList<>();
 

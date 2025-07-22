@@ -22,8 +22,8 @@ public class Pedido {
     private String numeroCartao;
     private UUID uuidTransacao;
 
-    public BigDecimal calcularValorTotal(List<Produto> produtos) {
-        return itens.stream()
+    public static Pedido criarComValorCalculado(Long clienteId, List<ItemPedido> itens, List<Produto> produtos, String numeroCartao, StatusPedido status) {
+        BigDecimal valorTotal = itens.stream()
                 .map(item -> {
                     Produto produto = produtos.stream()
                             .filter(p -> p.getSku()
@@ -34,5 +34,13 @@ public class Pedido {
                             .multiply(BigDecimal.valueOf(item.getQuantidade()));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return Pedido.builder()
+                .clienteId(clienteId)
+                .itens(itens)
+                .valorTotal(valorTotal)
+                .numeroCartao(numeroCartao)
+                .status(status)
+                .build();
     }
 }
