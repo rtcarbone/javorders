@@ -43,7 +43,8 @@ public class PedidoDTOMapper {
                 pedido.getClienteId(),
                 itens,
                 pedido.getValorTotal(),
-                pedido.getStatus()
+                pedido.getStatus(),
+                pedido.getUuidTransacao()
         );
     }
 
