@@ -6,10 +6,12 @@ import com.javorders.pagamentoservice.domain.model.Pagamento;
 import com.javorders.pagamentoservice.domain.model.StatusPagamento;
 import com.javorders.pagamentoservice.domain.ports.out.PagamentoExternoGateway;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SolicitarPagamentoUsecaseImpl implements SolicitarPagamentoUsecase {
 
     private final PagamentoExternoGateway externoGateway;
@@ -22,6 +24,7 @@ public class SolicitarPagamentoUsecaseImpl implements SolicitarPagamentoUsecase 
                 .uuidTransacao(uuid)
                 .status(StatusPagamento.PENDENTE)
                 .build();
+        log.info("Status do pagamento atualizado: {}", pagamentoAtualizado.getStatus());
         return pagamentoGateway.salvar(pagamentoAtualizado);
     }
 

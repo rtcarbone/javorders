@@ -4,7 +4,8 @@ import com.javorders.pedidoservice.domain.gateways.PagamentoGateway;
 import com.javorders.pedidoservice.domain.model.Pagamento;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPagamento;
-import com.javorders.pedidoservice.infrastructure.dto.PagamentoDTO;
+import com.javorders.pedidoservice.infrastructure.dto.PagamentoRequestDTO;
+import com.javorders.pedidoservice.infrastructure.dto.PagamentoResponseDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,11 +25,17 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
 
     @Override
     public Pagamento solicitarPagamento(Pedido pedido) {
+        var pagamentoRequest = new PagamentoRequestDTO(
+                pedido.getClienteId(),
+                pedido.getValorTotal(),
+                pedido.getNumeroCartao()
+        );
+
         return webClient.post()
                 .uri("/pagamentos")
-                .bodyValue(pedido)
+                .bodyValue(pagamentoRequest)
                 .retrieve()
-                .bodyToMono(PagamentoDTO.class)
+                .bodyToMono(PagamentoResponseDTO.class)
                 .map(dto -> new Pagamento(dto.uuidTransacao(), StatusPagamento.valueOf(dto.status())))
                 .block();
     }
