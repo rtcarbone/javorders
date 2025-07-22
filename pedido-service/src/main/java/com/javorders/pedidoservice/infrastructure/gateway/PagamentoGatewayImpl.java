@@ -18,7 +18,7 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
 
     public PagamentoGatewayImpl(WebClient.Builder builder) {
         this.webClient = builder
-                .baseUrl("http://pagamento-service:8084")
+                .baseUrl("http://pagamento-service:8080")
                 .build();
     }
 

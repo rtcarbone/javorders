@@ -12,7 +12,7 @@ public class EstoqueGatewayImpl implements EstoqueGateway {
 
     public EstoqueGatewayImpl(WebClient.Builder builder) {
         this.webClient = builder
-                .baseUrl("http://estoque-service:8083")
+                .baseUrl("http://estoque-service:8080")
                 .build();
     }
 

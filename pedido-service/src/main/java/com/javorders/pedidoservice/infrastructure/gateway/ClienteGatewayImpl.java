@@ -12,7 +12,7 @@ public class ClienteGatewayImpl implements ClienteGateway {
     private final WebClient webClient;
 
     public ClienteGatewayImpl(WebClient.Builder builder) {
-        this.webClient = builder.baseUrl("http://cliente-service:8081")
+        this.webClient = builder.baseUrl("http://cliente-service:8080")
                 .build();
     }
 

@@ -16,7 +16,7 @@ public class ProdutoGatewayImpl implements ProdutoGateway {
 
     public ProdutoGatewayImpl(WebClient.Builder builder) {
         this.webClient = builder
-                .baseUrl("http://produto-service:8082")
+                .baseUrl("http://produto-service:8080")
                 .build();
     }
 
