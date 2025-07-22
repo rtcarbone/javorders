@@ -53,6 +53,24 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <version>3.2.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -80,6 +98,7 @@
                         <configuration>
                             <includes>
                                 <include>com/javorders/clienteservice/infrastructure/controller/*</include>
+                                <include>com/javorders/clienteservice/infrastructure/gateway/*</include>
                                 <include>com/javorders/clienteservice/application/usecases/impl/*</include>
                             </includes>
                         </configuration>
