@@ -72,6 +72,13 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>com/javorders/estoqueservice/infrastructure/controller/*</include>
+                                <include>com/javorders/estoqueservice/infrastructure/gateway/*</include>
+                                <include>com/javorders/estoqueservice/application/usecases/impl/*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
