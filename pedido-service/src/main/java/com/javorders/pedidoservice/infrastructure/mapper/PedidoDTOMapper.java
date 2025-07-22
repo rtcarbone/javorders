@@ -22,14 +22,12 @@ public class PedidoDTOMapper {
                 .collect(Collectors.toList());
 
         BigDecimal total = BigDecimal.ZERO;
-        Pedido pedido = Pedido.builder()
+        return Pedido.builder()
                 .clienteId(dto.clienteId())
                 .itens(itens)
                 .numeroCartao(dto.numeroCartao())
                 .valorTotal(total)
                 .build();
-
-        return pedido;
     }
 
     public static PedidoResponseDTO toResponse(Pedido pedido) {

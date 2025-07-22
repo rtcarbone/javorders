@@ -14,6 +14,7 @@ public class PedidoMapper {
     public Pedido toDomain(PedidoDTO dto) {
         return Pedido.builder()
                 .clienteId(dto.clienteId())
+                .numeroCartao(dto.numeroCartao())
                 .itens(dto.itens()
                                .stream()
                                .map(i -> ItemPedido.builder()

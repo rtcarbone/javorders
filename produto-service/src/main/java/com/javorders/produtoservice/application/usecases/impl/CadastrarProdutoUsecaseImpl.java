@@ -16,10 +16,11 @@ public class CadastrarProdutoUsecaseImpl implements CadastrarProdutoUsecase {
 
     @Override
     public Produto executar(Produto produto) {
-        gateway.buscarPorSku(produto.getSku())
-                .ifPresent(p -> {
-                    throw new RuntimeException("Produto com SKU já existente.");
-                });
+        boolean skuJaExiste = gateway.buscarPorSku(produto.getSku())
+                .isPresent();
+        if (skuJaExiste) {
+            throw new IllegalArgumentException("Produto com SKU já existente.");
+        }
         return gateway.salvar(produto);
     }
 
