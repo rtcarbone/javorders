@@ -15,6 +15,11 @@ public class CadastrarEstoqueUsecaseImpl implements CadastrarEstoqueUsecase {
     }
 
     public Estoque executar(Estoque estoque) {
+        boolean skuJaExiste = gateway.buscarPorSku(estoque.getSku())
+                .isPresent();
+        if (skuJaExiste) {
+            throw new IllegalArgumentException("Já existe um estoque cadastrado com o SKU informado.");
+        }
         return gateway.salvar(estoque);
     }
 

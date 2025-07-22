@@ -6,12 +6,14 @@ import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPagamento;
 import com.javorders.pedidoservice.infrastructure.dto.PagamentoRequestDTO;
 import com.javorders.pedidoservice.infrastructure.dto.PagamentoResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class PagamentoGatewayImpl implements PagamentoGateway {
 
@@ -30,6 +32,8 @@ public class PagamentoGatewayImpl implements PagamentoGateway {
                 pedido.getValorTotal(),
                 pedido.getNumeroCartao()
         );
+
+        log.info(pagamentoRequest.toString());
 
         return webClient.post()
                 .uri("/pagamentos")
