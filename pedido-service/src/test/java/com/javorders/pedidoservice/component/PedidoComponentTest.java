@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Testcontainers
-@Transactional
 class PedidoComponentTest {
 
     @Container
@@ -46,6 +45,7 @@ class PedidoComponentTest {
     }
 
     @Test
+    @Transactional
     void deveSalvarEPersistirPedido() {
         // Arrange
         Pedido pedido = Pedido.builder()
