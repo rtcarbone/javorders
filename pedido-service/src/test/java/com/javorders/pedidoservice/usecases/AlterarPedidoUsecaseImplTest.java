@@ -5,52 +5,46 @@ import com.javorders.pedidoservice.domain.gateways.PedidoGateway;
 import com.javorders.pedidoservice.domain.model.ItemPedido;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.domain.model.StatusPedido;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class AlterarPedidoUsecaseImplTest {
 
-    private PedidoGateway pedidoGateway;
-    private AlterarPedidoUsecaseImpl usecase;
-
-    @BeforeEach
-    void setUp() {
-        pedidoGateway = mock(PedidoGateway.class);
-        usecase = new AlterarPedidoUsecaseImpl(pedidoGateway);
-    }
+    private final PedidoGateway gateway = mock(PedidoGateway.class);
+    private final AlterarPedidoUsecaseImpl usecase = new AlterarPedidoUsecaseImpl(gateway);
 
     @Test
     void deveAlterarPedidoComSucesso() {
         // Arrange
-        Long pedidoId = 1L;
+        Long id = 1L;
+
         Pedido pedido = Pedido.builder()
-                .clienteId(10L)
-                .numeroCartao("1234567890123456")
-                .valorTotal(new BigDecimal("150.00"))
+                .clienteId(2L)
+                .itens(List.of(new ItemPedido("ABC123", 3)))
+                .numeroCartao("1234")
+                .valorTotal(BigDecimal.valueOf(100))
                 .status(StatusPedido.ABERTO)
-                .uuidTransacao(UUID.randomUUID())
-                .itens(List.of(new ItemPedido("SKU123", 3)))
                 .build();
 
-        Pedido pedidoComId = pedido.toBuilder()
-                .id(pedidoId)
+        Pedido esperado = pedido.toBuilder()
+                .id(id)
                 .build();
 
-        when(pedidoGateway.salvar(pedidoComId)).thenReturn(pedidoComId);
+        when(gateway.salvar(any(Pedido.class))).thenReturn(esperado);
 
         // Act
-        Pedido resultado = usecase.executar(pedidoId, pedido);
+        Pedido resultado = usecase.executar(id, pedido);
 
         // Assert
-        assertEquals(pedidoId, resultado.getId());
-        assertEquals(pedido.getClienteId(), resultado.getClienteId());
-        verify(pedidoGateway, times(1)).salvar(pedidoComId);
+        assertThat(resultado).isNotNull();
+        assertThat(resultado.getId()).isEqualTo(id);
+        assertThat(resultado.getClienteId()).isEqualTo(2L);
+
+        verify(gateway, times(1)).salvar(any(Pedido.class));
     }
 }

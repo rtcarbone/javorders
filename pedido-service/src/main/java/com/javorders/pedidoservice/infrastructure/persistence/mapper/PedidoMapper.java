@@ -4,10 +4,12 @@ import com.javorders.pedidoservice.domain.model.ItemPedido;
 import com.javorders.pedidoservice.domain.model.Pedido;
 import com.javorders.pedidoservice.infrastructure.persistence.entity.ItemPedidoEntity;
 import com.javorders.pedidoservice.infrastructure.persistence.entity.PedidoEntity;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class PedidoMapper {
 
     public static PedidoEntity toEntity(Pedido pedido) {
@@ -19,13 +21,16 @@ public class PedidoMapper {
                 .uuidTransacao(pedido.getUuidTransacao())
                 .build();
 
-        List<ItemPedidoEntity> itens = pedido.getItens().stream().map(i ->
-            ItemPedidoEntity.builder()
-                    .sku(i.getSku())
-                    .quantidade(i.getQuantidade())
-                    .pedido(entity)
-                    .build()
-        ).collect(Collectors.toList());
+        List<ItemPedidoEntity> itens = pedido.getItens()
+                .stream()
+                .map(i ->
+                             ItemPedidoEntity.builder()
+                                     .sku(i.getSku())
+                                     .quantidade(i.getQuantidade())
+                                     .pedido(entity)
+                                     .build()
+                )
+                .collect(Collectors.toList());
 
         entity.setItens(itens);
         return entity;
@@ -38,12 +43,15 @@ public class PedidoMapper {
                 .valorTotal(entity.getValorTotal())
                 .status(entity.getStatus())
                 .uuidTransacao(entity.getUuidTransacao())
-                .itens(entity.getItens().stream().map(i ->
-                    ItemPedido.builder()
-                            .sku(i.getSku())
-                            .quantidade(i.getQuantidade())
-                            .build()
-                ).collect(Collectors.toList()))
+                .itens(entity.getItens()
+                               .stream()
+                               .map(i ->
+                                            ItemPedido.builder()
+                                                    .sku(i.getSku())
+                                                    .quantidade(i.getQuantidade())
+                                                    .build()
+                               )
+                               .collect(Collectors.toList()))
                 .build();
     }
 }

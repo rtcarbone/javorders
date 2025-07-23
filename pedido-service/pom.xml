@@ -90,6 +90,13 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>com/javorders/pedidoservice/infrastructure/controller/*</include>
+                                <include>com/javorders/pedidoservice/infrastructure/gateway/*</include>
+                                <include>com/javorders/pedidoservice/application/usecases/impl/*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

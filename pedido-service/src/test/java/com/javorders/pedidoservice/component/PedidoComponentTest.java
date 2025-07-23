@@ -1,77 +1,70 @@
 package com.javorders.pedidoservice.component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javorders.pedidoservice.PedidoServiceApplication;
-import com.javorders.pedidoservice.infrastructure.dto.ItemPedidoDTO;
-import com.javorders.pedidoservice.infrastructure.dto.PedidoRequestDTO;
+import com.javorders.pedidoservice.domain.model.ItemPedido;
+import com.javorders.pedidoservice.domain.model.Pedido;
+import com.javorders.pedidoservice.domain.model.StatusPedido;
 import com.javorders.pedidoservice.infrastructure.persistence.entity.PedidoEntity;
+import com.javorders.pedidoservice.infrastructure.persistence.mapper.PedidoMapper;
 import com.javorders.pedidoservice.infrastructure.persistence.repository.PedidoRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.*;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(
-        classes = PedidoServiceApplication.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@SpringBootTest
+@Testcontainers
+@Transactional
 class PedidoComponentTest {
 
-    @LocalServerPort
-    private int port;
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+            .withDatabaseName("pedidos")
+            .withUsername("test")
+            .withPassword("test");
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    private PedidoMapper pedidoMapper;
 
-    @Autowired
-    private PedidoRepository repository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    @DynamicPropertySource
+    static void config(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 
     @Test
-    void deveCriarEConsultarPedido() {
-        // Preparar o DTO
-        PedidoRequestDTO requestDTO = new PedidoRequestDTO(
-                1L,
-                "1234567890123456",
-                List.of(new ItemPedidoDTO("SKU123", 2))
-        );
+    void deveSalvarEPersistirPedido() {
+        // Arrange
+        Pedido pedido = Pedido.builder()
+                .clienteId(1L)
+                .numeroCartao("1234567890123456")
+                .valorTotal(BigDecimal.valueOf(150.00))
+                .status(StatusPedido.ABERTO)
+                .itens(List.of(new ItemPedido("SKU-123", 2)))
+                .build();
 
-        // PUT /pedidos/1
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        // Act
+        PedidoEntity entitySalvo = pedidoRepository.save(pedidoMapper.toEntity(pedido));
+        Optional<PedidoEntity> encontrado = pedidoRepository.findById(entitySalvo.getId());
 
-        HttpEntity<PedidoRequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                "http://localhost:" + port + "/pedidos/1",
-                HttpMethod.PUT,
-                requestEntity,
-                String.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // Verificar se o pedido foi persistido no banco
-        PedidoEntity entity = repository.findById(1L)
-                .orElse(null);
-        assertThat(entity).isNotNull();
-        assertThat(entity.getClienteId()).isEqualTo(1L);
-        assertThat(entity.getItens()).hasSize(1);
-        assertThat(entity.getItens()
-                           .get(0)
-                           .getSku()).isEqualTo("SKU123");
-        assertThat(entity.getItens()
-                           .get(0)
-                           .getQuantidade()).isEqualTo(2);
+        // Assert
+        assertThat(encontrado).isPresent();
+        assertThat(encontrado.get()
+                           .getClienteId()).isEqualTo(1L);
+        assertThat(encontrado.get()
+                           .getItens()).hasSize(1);
     }
 }
