@@ -1,6 +1,5 @@
 package com.javorders.clienteservice.component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javorders.clienteservice.infrastructure.persistence.repository.ClienteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class ClienteComponentTestContainer {
+class ClienteComponentTest {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
@@ -38,8 +37,6 @@ class ClienteComponentTestContainer {
     private MockMvc mockMvc;
     @Autowired
     private ClienteRepository clienteRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
