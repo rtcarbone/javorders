@@ -48,9 +48,21 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.javorders</groupId>
-            <artifactId>pedido-service</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>rabbitmq</artifactId>
+            <version>1.19.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <version>3.2.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -77,6 +89,12 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <includes>
+                                <include>com/javorders/pedidoreceiver/infrastructure/controller/*</include>
+                                <include>com/javorders/pedidoreceiver/application/usecases/impl/*</include>
+                            </includes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
