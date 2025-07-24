@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PedidoComponentTest {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("pedidos")
             .withUsername("test")
             .withPassword("test");

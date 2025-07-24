@@ -24,14 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProdutoComponentTest {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("testdb")
             .withUsername("user")
             .withPassword("password");
-
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ProdutoRepository repository;
 

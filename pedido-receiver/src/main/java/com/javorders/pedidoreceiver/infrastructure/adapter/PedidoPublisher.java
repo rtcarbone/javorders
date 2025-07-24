@@ -26,7 +26,7 @@ public class PedidoPublisher implements PedidoPublisherGateway {
             PedidoDTO dto = mapper.toDTO(pedido);
             String mensagemJson = objectMapper.writeValueAsString(dto);
 
-            rabbitTemplate.convertAndSend("novo-pedido-queue", mensagemJson);
+            rabbitTemplate.convertAndSend("", "novo-pedido-queue", mensagemJson);
             log.info("Pedido publicado com sucesso na fila: {}", mensagemJson);
 
         } catch (JsonProcessingException e) {
