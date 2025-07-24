@@ -3,16 +3,14 @@ package com.javorders.produtoservice.application.usecases.impl;
 import com.javorders.produtoservice.application.usecases.AlterarProdutoUsecase;
 import com.javorders.produtoservice.domain.gateways.ProdutoGateway;
 import com.javorders.produtoservice.domain.model.Produto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AlterarProdutoUsecaseImpl implements AlterarProdutoUsecase {
 
     private final ProdutoGateway gateway;
-
-    public AlterarProdutoUsecaseImpl(ProdutoGateway gateway) {
-        this.gateway = gateway;
-    }
 
     @Override
     public Produto executar(Long id, Produto produto) {
