@@ -12,7 +12,7 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
 
   postgres-cliente:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: clientes
       POSTGRES_USER: user
@@ -21,7 +21,7 @@ services:
       - "5433:5432"
 
   postgres-produto:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: produtos
       POSTGRES_USER: user
@@ -30,7 +30,7 @@ services:
       - "5434:5432"
 
   postgres-estoque:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: estoques
       POSTGRES_USER: user
@@ -39,7 +39,7 @@ services:
       - "5435:5432"
 
   postgres-pagamento:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: pagamentos
       POSTGRES_USER: user
@@ -48,7 +48,7 @@ services:
       - "5436:5432"
 
   postgres-pedido:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: pedidos
       POSTGRES_USER: user
@@ -66,8 +66,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cliente:5432/clientes
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   produto-service:
     build: ./produto-service
@@ -124,3 +122,20 @@ services:
       - estoque-service
       - pagamento-service
       - pedido-service
+
+  test-runner:
+    image: maven:3.9.4-eclipse-temurin-21
+    volumes:
+      - .:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /app
+    depends_on:
+      - cliente-service
+      - produto-service
+      - estoque-service
+      - pagamento-service
+      - pedido-service
+      - pedido-receiver
+    command: mvn test
+    environment:
+      - TESTCONTAINERS_HOST_OVERRIDE=host.docker.internal
