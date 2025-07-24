@@ -24,7 +24,6 @@ public class SolicitarPagamentoUsecaseImpl implements SolicitarPagamentoUsecase 
                 .uuidTransacao(uuid)
                 .status(StatusPagamento.PENDENTE)
                 .build();
-        log.info("Status do pagamento atualizado: {}", pagamentoAtualizado.getStatus());
         return pagamentoGateway.salvar(pagamentoAtualizado);
     }
 

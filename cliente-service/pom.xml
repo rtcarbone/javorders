@@ -98,7 +98,6 @@
                         <configuration>
                             <includes>
                                 <include>com/javorders/clienteservice/infrastructure/controller/*</include>
-                                <include>com/javorders/clienteservice/infrastructure/gateway/*</include>
                                 <include>com/javorders/clienteservice/application/usecases/impl/*</include>
                             </includes>
                         </configuration>

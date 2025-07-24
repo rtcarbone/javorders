@@ -66,6 +66,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cliente:5432/clientes
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
   produto-service:
     build: ./produto-service
