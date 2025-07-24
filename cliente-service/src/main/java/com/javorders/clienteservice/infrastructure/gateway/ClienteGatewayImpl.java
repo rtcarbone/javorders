@@ -4,6 +4,7 @@ import com.javorders.clienteservice.domain.gateways.ClienteGateway;
 import com.javorders.clienteservice.domain.model.Cliente;
 import com.javorders.clienteservice.infrastructure.persistence.mapper.ClienteMapper;
 import com.javorders.clienteservice.infrastructure.persistence.repository.ClienteRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,13 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class ClienteGatewayImpl implements ClienteGateway {
 
     private final ClienteRepository repository;
-
-    public ClienteGatewayImpl(ClienteRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public Cliente salvar(Cliente cliente) {
