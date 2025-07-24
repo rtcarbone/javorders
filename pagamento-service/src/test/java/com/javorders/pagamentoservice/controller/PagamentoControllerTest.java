@@ -1,6 +1,5 @@
 package com.javorders.pagamentoservice.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javorders.pagamentoservice.application.usecases.BuscarPagamentoPorUuidUsecase;
 import com.javorders.pagamentoservice.application.usecases.EstornarPagamentoUsecase;
 import com.javorders.pagamentoservice.application.usecases.SolicitarPagamentoUsecase;
@@ -36,9 +35,6 @@ class PagamentoControllerTest {
 
     @MockBean
     private EstornarPagamentoUsecase estornarPagamentoUsecase;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void deveSolicitarPagamentoComSucesso() throws Exception {
